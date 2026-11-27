@@ -65,13 +65,15 @@
   }
 
   /** Endereço público de uma bolsa (funciona em qualquer hospedagem estática). */
+  const slugify = (s) => norm(s).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  /**
+   * Link de compartilhamento da peça: p/<slug>/ (e p/<slug>/<cor>/).
+   * Essas páginas têm a foto e o nome da peça na prévia do WhatsApp/Instagram
+   * e levam direto para a peça no catálogo (geradas por tools/gerar-paginas.mjs).
+   */
   const productUrl = (slug, cor) => {
-    const u = new URL(window.location.href);
-    u.hash = '';
-    u.search = '';
-    u.searchParams.set('bolsa', slug);
-    if (cor) u.searchParams.set('cor', cor);
-    return u.toString();
+    const base = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
+    return `${base}p/${slug}/${cor ? `${slugify(cor)}/` : ''}`;
   };
 
   /** Copia texto para a área de transferência (com alternativa para navegadores antigos). */
@@ -449,7 +451,9 @@
       <button type="button" role="radio" aria-checked="false" data-cor="${esc(c.nome)}" style="--c:${esc(c.hex)}" aria-label="${esc(c.nome)}" title="${esc(c.nome)}"></button>`).join('');
     const cores = (p.cores || []).map((c) => c.nome);
     currentColor = null;
-    setColor(cores.includes(corInicial) ? corInicial : (cores[0] || null));
+    // A cor do link pode vir pelo nome ("Azul-marinho") ou no formato de endereço ("azul-marinho")
+    const corLink = cores.find((c) => c === corInicial || slugify(c) === slugify(corInicial));
+    setColor(corLink || cores[0] || null);
     if (!currentFotos.length) { currentFotos = fotosPara(p, currentColor); renderGallery(); }
 
     const st = DISPONIBILIDADE[p.disponibilidade] || '';
