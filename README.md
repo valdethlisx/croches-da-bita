@@ -116,9 +116,11 @@ No editor, mude **Disponibilidade** para *Pronta entrega*, *Sob encomenda*, *Con
 ## 6. Obter o link público
 
 - **Catálogo:** é o endereço gerado no passo 5.
-- **Bolsa específica:** abra a bolsa e toque em **Copiar link** ou **Enviar pelo WhatsApp**. O link tem o formato `https://seu-endereco/?bolsa=bolsa-aurora` e abre direto naquela bolsa.
+- **Peça específica:** abra a peça e toque em **Copiar link** ou **Compartilhar no WhatsApp**. O link tem o formato `https://valdethlisx.github.io/croches-da-bita/p/bolsa-tranca/` (e, para outra cor, `.../p/bolsa-tranca/azul-marinho/`). Na prévia do WhatsApp e do Instagram aparecem a foto, o nome e a descrição da própria peça, e quem toca é levado direto para ela no catálogo. Esse também é o link que vai na mensagem do "Tenho interesse".
 
-A prévia está publicada em **https://valdethlisx.github.io/croches-da-bita/**, e o `index.html` já aponta `og:image`, `og:url` e `canonical` para esse endereço. Se o site mudar de endereço (outro repositório, Netlify ou domínio próprio), atualize essas três linhas no `index.html`. Assim o WhatsApp e o Instagram mostram a imagem da marca quando o link é compartilhado. Como o site é estático, os links de cada bolsa mostram essa mesma imagem geral na prévia.
+**Como as páginas de compartilhamento são criadas:** a cada publicação no GitHub (inclusive quando você troca o `products.json` pelo navegador), a automação `.github/workflows/publicar.yml` roda `tools/gerar-paginas.mjs`, gera as páginas `p/…` a partir do `products.json` e publica o site. Leva 1 a 2 minutos, e o andamento aparece na aba **Actions** do repositório. A pasta `p/` não fica no repositório: ela é gerada a cada publicação. Se um link de peça for aberto antes da página existir, o `404.html` leva a pessoa para a peça no catálogo do mesmo jeito. **No Netlify**, configure o comando de build como `node tools/gerar-paginas.mjs` com a variável `SITE_URL` igual ao endereço do site.
+
+A prévia está publicada em **https://valdethlisx.github.io/croches-da-bita/**, e o `index.html` já aponta `og:image`, `og:url` e `canonical` para esse endereço. Se o site mudar de endereço (outro repositório, Netlify ou domínio próprio), atualize essas três linhas no `index.html`. Assim o WhatsApp e o Instagram mostram a imagem da marca quando o link do catálogo é compartilhado; os links de cada peça mostram a foto da peça.
 
 ## 7. Colocar o link na bio do Instagram
 
