@@ -49,9 +49,11 @@
    * Conversa no WhatsApp da Bita com a mensagem do produto.
    * Em peças com mais de uma cor, a cor escolhida entra junto do nome.
    */
-  const waContato = (p, cor) => {
+  const waContato = (p, cor, link) => {
     const nome = cor && (p.cores || []).length > 1 ? `${p.nome} (cor ${cor})` : p.nome;
-    return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(`Olá, Bita! Vi o produto ${nome} e gostaria de mais informações.`)}`;
+    let msg = `Olá, Bita! Vi o produto ${nome} e gostaria de mais informações.`;
+    if (link) msg += `\n${link}`; // link da peça, para a Bita ver exatamente qual é
+    return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`;
   };
 
   /** Fotos de uma cor (fotos sem "cor" valem para todas). Sem fotos da cor, devolve todas. */
@@ -424,8 +426,9 @@
     }
     $('#pdp-whatsapp').href = `https://wa.me/?text=${encodeURIComponent(`${current.nome} · Crochês da Bita\n${productUrl(current.slug, corDoLink())}`)}`;
     // "Tenho interesse" abre o WhatsApp da Bita com o produto (e a cor) na mensagem
-    $('#pdp-interest').href = waContato(current, currentColor);
-    $('#pdp-mb-interest').href = waContato(current, currentColor);
+    const wa = waContato(current, currentColor, productUrl(current.slug, corDoLink()));
+    $('#pdp-interest').href = wa;
+    $('#pdp-mb-interest').href = wa;
   }
 
   function fillProduct(p, corInicial) {

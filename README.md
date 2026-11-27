@@ -128,7 +128,7 @@ No app do Instagram: **Perfil → Editar perfil → Links → Adicionar link ext
 
 ## Como funciona o contato
 
-Na página de cada peça, o botão **Tenho interesse** (também na barra fixa do celular) abre uma conversa no **WhatsApp** da Bita já com a mensagem "Olá, Bita! Vi o produto [nome da peça] e gostaria de mais informações.". Em peças com várias cores, a cor escolhida entra junto do nome, por exemplo "Bolsa Trança (cor Azul-marinho)". O número fica em `products.json`, em `loja.whatsapp` (só dígitos, com DDI e DDD: `5511952251458`), e também pode ser trocado no editor.
+Na página de cada peça, o botão **Tenho interesse** (também na barra fixa do celular) abre uma conversa no **WhatsApp** da Bita já com a mensagem "Olá, Bita! Vi o produto [nome da peça] e gostaria de mais informações.". Em peças com várias cores, a cor escolhida entra junto do nome, por exemplo "Bolsa Trança (cor Azul-marinho)". O link da peça (já na cor escolhida) vai na linha de baixo, para a Bita ver exatamente qual é. O número fica em `products.json`, em `loja.whatsapp` (só dígitos, com DDI e DDD: `5511952251458`), e também pode ser trocado no editor.
 
 O Instagram aparece no cabeçalho, na seção "Mais inspiração" e no rodapé, como link para o perfil @crochesdabita.
 
