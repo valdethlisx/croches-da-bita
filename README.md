@@ -104,6 +104,8 @@ No editor, mude **Disponibilidade** para *Pronta entrega*, *Sob encomenda*, *Con
 
 **Para atualizar depois** (também pelo navegador do celular): abra o repositório, toque no arquivo (ex.: `products.json`), use **Upload files** para enviar a versão nova com o mesmo nome e confirme. O site atualiza em 1 a 2 minutos.
 
+**Cache:** o GitHub Pages deixa o navegador guardar os arquivos por até 10 minutos. Por isso, logo depois de publicar, quem já abriu o site pode continuar vendo a versão anterior por alguns minutos. Para ver na hora, recarregue a página (no computador, Ctrl+F5; no celular, feche a aba e abra o link de novo). Mudanças só no `products.json` aparecem logo ao recarregar, porque o site sempre busca a versão mais nova desse arquivo. **Se mudar o `styles.css`, o `script.js` ou as imagens da marca**, aumente o número `?v=` que aparece no `index.html` (ex.: de `?v=20261127-1` para `?v=20261127-2`) em todos os lugares onde ele aparece. Assim ninguém fica com uma mistura de arquivos antigos e novos.
+
 ### Opção B: Netlify Drop (mais rápido, pelo computador)
 
 1. Acesse app.netlify.com/drop.
