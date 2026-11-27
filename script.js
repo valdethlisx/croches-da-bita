@@ -13,6 +13,7 @@
   const CONFIG = {
     dataUrl: 'products.json',
     instagramUser: 'crochesdabita',
+    whatsapp: '5511952251458', // DDI + DDD + número, só dígitos (substituído por loja.whatsapp do products.json)
     // Faixas de preço do filtro (em reais). Ajuste se os preços mudarem muito.
     faixasPreco: [
       { id: 'ate-150', label: 'Até R$ 150', min: 0, max: 150 },
@@ -42,15 +43,27 @@
   const temPreco = (p) => typeof p.preco === 'number' && isFinite(p.preco);
   const precoTxt = (p) => (temPreco(p) ? brl.format(p.preco) : 'Sob consulta');
   /** "bolsa" para bolsas, "peça" para itens de mesa posta e outros */
-  const ehBolsa = (p) => !/mesa/i.test(p.categoria || '');
+  const ehBolsa = (p) => !/mesa|acess/i.test(p.categoria || '');
   const nomeTipo = (p) => (ehBolsa(p) ? 'bolsa' : 'peça');
 
+  /** Conversa no WhatsApp da Bita com a mensagem do produto */
+  const waContato = (p) => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(`Olá, Bita! Vi o produto ${p.nome} e gostaria de mais informações.`)}`;
+
+  /** Fotos de uma cor (fotos sem "cor" valem para todas). Sem fotos da cor, devolve todas. */
+  function fotosPara(p, cor) {
+    const fotos = p.fotos || [];
+    if (!cor) return fotos;
+    const daCor = fotos.filter((f) => !f.cor || f.cor === cor);
+    return daCor.length ? daCor : fotos;
+  }
+
   /** Endereço público de uma bolsa (funciona em qualquer hospedagem estática). */
-  const productUrl = (slug) => {
+  const productUrl = (slug, cor) => {
     const u = new URL(window.location.href);
     u.hash = '';
     u.search = '';
     u.searchParams.set('bolsa', slug);
+    if (cor) u.searchParams.set('cor', cor);
     return u.toString();
   };
 
@@ -101,6 +114,7 @@
       state.produtos = (data.produtos || []).filter((p) => p && p.slug && p.nome);
       state.loja = data.loja || {};
       if (state.loja.instagram) CONFIG.instagramUser = state.loja.instagram.replace(/^@/, '');
+      if (state.loja.whatsapp) CONFIG.whatsapp = String(state.loja.whatsapp).replace(/\D/g, '');
       return true;
     } catch (err) {
       console.error('Não foi possível carregar products.json', err);
@@ -214,7 +228,10 @@
   }
 
   function cardHTML(p) {
-    const fotos = p.fotos || [];
+    // Com filtro de cor ativo, o cartão mostra as fotos da cor filtrada
+    const corFiltro = [...state.filtros.cores].find((c) => (p.cores || []).some((x) => x.nome === c));
+    const cor = corFiltro || (p.cores || [])[0]?.nome;
+    const fotos = fotosPara(p, cor);
     const f1 = fotos[0] || { src: '', alt: p.nome };
     const f2 = fotos[1];
     const cores = (p.cores || []).map((c) => `<span style="--c:${esc(c.hex)}" title="${esc(c.nome)}"></span>`).join('');
@@ -234,7 +251,7 @@
             <div class="dots" role="img" aria-label="Cores disponíveis: ${esc(coresTxt)}">${cores}</div>
           </div>
           <p class="status status-${esc(p.disponibilidade)}">${esc(DISPONIBILIDADE[p.disponibilidade] || '')}</p>
-          <a class="link-arrow card-link" href="?bolsa=${encodeURIComponent(p.slug)}" data-slug="${esc(p.slug)}" aria-label="Ver detalhes: ${esc(p.nome)}">
+          <a class="link-arrow card-link" href="?bolsa=${encodeURIComponent(p.slug)}${corFiltro ? `&cor=${encodeURIComponent(corFiltro)}` : ''}" data-slug="${esc(p.slug)}" data-cor="${esc(corFiltro || '')}" aria-label="Ver detalhes: ${esc(p.nome)}">
             Ver detalhes ${icon('i-arrow-right')}
           </a>
         </div>
@@ -303,7 +320,7 @@
       const a = e.target.closest('a[data-slug]');
       if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
       e.preventDefault();
-      openProduct(a.dataset.slug, { push: true });
+      openProduct(a.dataset.slug, { push: true, cor: a.dataset.cor || '' });
     });
 
     // Painel de filtros no celular
@@ -334,14 +351,29 @@
   let current = null;       // produto aberto
   let currentColor = null;  // cor selecionada
   let currentPhoto = 0;
+  let currentFotos = [];    // fotos da cor selecionada
   let openedByPush = false; // se o histórico recebeu uma entrada ao abrir
+
+  /** Cor que entra no link compartilhado (a primeira cor é o padrão e não aparece no link) */
+  const corDoLink = () => (current && currentColor && (current.cores || [])[0]?.nome !== currentColor ? currentColor : '');
 
   function specRow(label, value) {
     return value ? `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>` : '';
   }
 
+  function renderGallery() {
+    const fotos = currentFotos;
+    $('#pdp-thumbs').innerHTML = fotos.map((f, i) => `
+      <button type="button" data-i="${i}" aria-label="Ver foto ${i + 1} de ${fotos.length}" aria-pressed="false">
+        <img src="${esc(f.src)}" alt="" width="160" height="200" loading="lazy" decoding="async">
+      </button>`).join('');
+    $('#pdp-thumbs').hidden = fotos.length < 2;
+    $('#pdp-swipe-hint').hidden = fotos.length < 2;
+    setPhoto(0);
+  }
+
   function setPhoto(i) {
-    const fotos = current.fotos || [];
+    const fotos = currentFotos;
     if (!fotos.length) return;
     currentPhoto = (i + fotos.length) % fotos.length;
     const f = fotos[currentPhoto];
@@ -370,22 +402,35 @@
   }
 
   function setColor(nome) {
+    const mudouFotos = fotosPara(current, nome) !== currentFotos;
     currentColor = nome;
     $('#pdp-color-name').textContent = nome || '';
     $$('#pdp-swatches button').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.cor === nome)));
+    // A galeria passa a mostrar as fotos da cor escolhida
+    const novas = fotosPara(current, nome);
+    if (mudouFotos && novas.map((f) => f.src).join() !== currentFotos.map((f) => f.src).join()) {
+      currentFotos = novas;
+      renderGallery();
+    }
+    // O link da página acompanha a cor, para compartilhar já na cor certa
+    if (pdp.open && current) {
+      const url = `?bolsa=${encodeURIComponent(current.slug)}${corDoLink() ? `&cor=${encodeURIComponent(corDoLink())}` : ''}`;
+      history.replaceState(history.state, '', url);
+    }
+    $('#pdp-whatsapp').href = `https://wa.me/?text=${encodeURIComponent(`${current.nome} · Crochês da Bita\n${productUrl(current.slug, corDoLink())}`)}`;
   }
 
   function interestMessage() {
     const p = current;
     let msg = `Olá, Bita! Conheci o modelo ${p.nome} pelo catálogo e gostaria de saber mais sobre ele.`;
     if (currentColor && (p.cores || []).length > 1) msg += ` Tenho interesse na cor ${currentColor}.`;
-    msg += `\n\nRef.: ${p.id}\n${productUrl(p.slug)}`;
+    msg += `\n\nRef.: ${p.id}\n${productUrl(p.slug, corDoLink())}`;
     return msg;
   }
 
-  function fillProduct(p) {
+  function fillProduct(p, corInicial) {
     current = p;
-    const fotos = p.fotos || [];
+    currentFotos = [];
 
     $('#pdp-meta').textContent = `${p.categoria} · ${p.modelo} · Ref. ${p.id}`;
     $('#pdp-tags').innerHTML = tagsFor(p);
@@ -393,20 +438,18 @@
     $('#pdp-price').textContent = temPreco(p) ? brl.format(p.preco) : 'Preço sob consulta';
     $('#pdp-desc').textContent = p.descricao || '';
 
-    $('#pdp-thumbs').innerHTML = fotos.map((f, i) => `
-      <button type="button" data-i="${i}" aria-label="Ver foto ${i + 1} de ${fotos.length}" aria-pressed="false">
-        <img src="${esc(f.src)}" alt="" width="160" height="200" loading="lazy" decoding="async">
-      </button>`).join('');
-    $('#pdp-thumbs').hidden = fotos.length < 2;
-    $('#pdp-swipe-hint').hidden = fotos.length < 2;
-    setPhoto(0);
     $('#pdp-mb-name').textContent = p.nome;
     $('#pdp-mb-price').textContent = precoTxt(p);
     $('#pdp-mb-interest').textContent = p.disponibilidade === 'esgotada' ? 'Consultar' : 'Tenho interesse';
 
     $('#pdp-swatches').innerHTML = (p.cores || []).map((c) => `
       <button type="button" role="radio" aria-checked="false" data-cor="${esc(c.nome)}" style="--c:${esc(c.hex)}" aria-label="${esc(c.nome)}" title="${esc(c.nome)}"></button>`).join('');
-    setColor((p.cores || [])[0]?.nome || null);
+    const cores = (p.cores || []).map((c) => c.nome);
+    currentColor = null;
+    setColor(cores.includes(corInicial) ? corInicial : (cores[0] || null));
+    if (!currentFotos.length) { currentFotos = fotosPara(p, currentColor); renderGallery(); }
+    $('#pdp-wa-contact').href = waContato(p);
+    $('#pdp-mb-wa').href = waContato(p);
 
     const st = DISPONIBILIDADE[p.disponibilidade] || '';
     $('#pdp-availability').innerHTML = `
@@ -434,8 +477,7 @@
     $('#pdp-demo').textContent = aviso;
     $('#pdp-demo').hidden = !aviso;
 
-    const url = productUrl(p.slug);
-    $('#pdp-whatsapp').href = `https://wa.me/?text=${encodeURIComponent(`${p.nome} · Crochês da Bita\n${url}`)}`;
+    $('#pdp-whatsapp').href = `https://wa.me/?text=${encodeURIComponent(`${p.nome} · Crochês da Bita\n${productUrl(p.slug, corDoLink())}`)}`;
 
     // Relacionadas: mesma categoria primeiro, depois as demais
     const outras = state.produtos.filter((x) => x.slug !== p.slug)
@@ -448,16 +490,17 @@
     $('#pdp-scroll').scrollTop = 0;
   }
 
-  function openProduct(slug, { push = false } = {}) {
+  function openProduct(slug, { push = false, cor = '' } = {}) {
     const p = state.produtos.find((x) => x.slug === slug);
     if (!p) {
       if (pdp.open) closeProduct();
       return false;
     }
-    fillProduct(p);
+    fillProduct(p, cor);
     if (push) {
-      if (pdp.open) history.replaceState({ bolsa: slug }, '', `?bolsa=${encodeURIComponent(slug)}`);
-      else { history.pushState({ bolsa: slug }, '', `?bolsa=${encodeURIComponent(slug)}`); openedByPush = true; }
+      const url = `?bolsa=${encodeURIComponent(slug)}${corDoLink() ? `&cor=${encodeURIComponent(corDoLink())}` : ''}`;
+      if (pdp.open) history.replaceState({ bolsa: slug }, '', url);
+      else { history.pushState({ bolsa: slug }, '', url); openedByPush = true; }
     }
     if (!pdp.open) {
       pdp.showModal();
@@ -491,9 +534,10 @@
   }
 
   function route() {
-    const slug = new URLSearchParams(window.location.search).get('bolsa');
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('bolsa');
     if (slug) {
-      if (!openProduct(slug)) {
+      if (!openProduct(slug, { cor: params.get('cor') || '' })) {
         toast('Essa bolsa não está mais no catálogo.');
         history.replaceState({}, '', window.location.pathname + '#catalogo');
       }
@@ -529,7 +573,7 @@
     $('#pdp-mb-interest').addEventListener('click', () => openContact(interestMessage()));
 
     $('#pdp-copy-link').addEventListener('click', async () => {
-      const ok = await copyText(productUrl(current.slug));
+      const ok = await copyText(productUrl(current.slug, corDoLink()));
       toast(ok ? 'Link da bolsa copiado' : 'Não foi possível copiar o link');
     });
 
@@ -537,7 +581,7 @@
       const b = $('#pdp-native-share');
       b.hidden = false;
       b.addEventListener('click', () => {
-        navigator.share({ title: `${current.nome} · Crochês da Bita`, url: productUrl(current.slug) }).catch(() => {});
+        navigator.share({ title: `${current.nome} · Crochês da Bita`, url: productUrl(current.slug, corDoLink()) }).catch(() => {});
       });
     }
 
@@ -558,7 +602,7 @@
   let lbIndex = 0;
 
   function showLb(i) {
-    const fotos = current?.fotos || [];
+    const fotos = currentFotos;
     if (!fotos.length) return;
     lbIndex = (i + fotos.length) % fotos.length;
     const img = $('#lb-img');

@@ -164,7 +164,7 @@
 
         <fieldset>
           <legend>Fotografias</legend>
-          <p class="hint">Coloque as fotos na pasta <code>assets/img/produtos/</code> e escreva o caminho, por exemplo <code>assets/img/produtos/bolsa-aurora-1.jpg</code>. A primeira foto é a principal. A descrição ajuda quem usa leitor de tela.</p>
+          <p class="hint">Coloque as fotos na pasta <code>assets/img/produtos/</code> e escreva o caminho, por exemplo <code>assets/img/produtos/bolsa-aurora-1.jpg</code>. A primeira foto é a principal. A descrição ajuda quem usa leitor de tela. Se a peça tem várias cores, escreva em cada foto o nome da cor (igual ao das cores acima): ao tocar na cor, o site mostra só as fotos dela.</p>
           <div class="rows fotos" id="rows-fotos"></div>
           <button class="btn" type="button" id="b-add-foto">+ Adicionar foto</button>
         </fieldset>
@@ -182,6 +182,7 @@
         <form id="lform" novalidate>
           <div class="grid">
             <label class="f">Usuário do Instagram<input name="instagram" placeholder="crochesdabita"></label>
+            <label class="f">WhatsApp (com DDI e DDD, só números)<input name="whatsapp" inputmode="numeric" placeholder="5511952251458"></label>
             <label class="f">Texto sobre encomendas (rodapé)<input name="encomendas"></label>
             <label class="f">Entrega<input name="entrega" placeholder="Deixe vazio para não exibir"></label>
             <label class="f">Pagamento<input name="pagamento" placeholder="Deixe vazio para não exibir"></label>
@@ -257,8 +258,8 @@
   function corRow(c = { nome: '', hex: '#D3B38C' }) {
     return `<div class="row"><input type="text" placeholder="Nome da cor" value="${esc(c.nome)}" data-k="nome" aria-label="Nome da cor"><input type="color" value="${esc(c.hex || '#D3B38C')}" data-k="hex" aria-label="Tom da cor"><button type="button" class="x" aria-label="Remover cor">×</button></div>`;
   }
-  function fotoRow(f = { src: '', alt: '' }) {
-    return `<div class="row"><img src="${esc(f.src)}" alt=""><div class="inputs"><input type="text" placeholder="assets/img/produtos/nome-1.jpg" value="${esc(f.src)}" data-k="src" aria-label="Caminho da foto"><input type="text" placeholder="Descrição da foto" value="${esc(f.alt)}" data-k="alt" aria-label="Descrição da foto"></div><button type="button" class="x" aria-label="Remover foto">×</button></div>`;
+  function fotoRow(f = { src: '', alt: '', cor: '' }) {
+    return `<div class="row"><img src="${esc(f.src)}" alt=""><div class="inputs"><input type="text" placeholder="assets/img/produtos/nome-1.jpg" value="${esc(f.src)}" data-k="src" aria-label="Caminho da foto"><input type="text" placeholder="Descrição da foto" value="${esc(f.alt)}" data-k="alt" aria-label="Descrição da foto"><input type="text" placeholder="Cor desta foto (opcional, igual ao nome da cor)" value="${esc(f.cor)}" data-k="cor" aria-label="Cor desta foto"></div><button type="button" class="x" aria-label="Remover foto">×</button></div>`;
   }
 
   function edit(i) {
@@ -284,7 +285,12 @@
     p.preco = f.elements.preco.value === '' ? null : Math.round(Number(f.elements.preco.value) * 100) / 100;
     BOOL.forEach((k) => { p[k] = f.elements[k].checked; });
     p.cores = $$('#rows-cores .row').map((r) => ({ nome: $('[data-k=nome]', r).value.trim(), hex: $('[data-k=hex]', r).value })).filter((c) => c.nome);
-    p.fotos = $$('#rows-fotos .row').map((r) => ({ src: $('[data-k=src]', r).value.trim(), alt: $('[data-k=alt]', r).value.trim() })).filter((x) => x.src);
+    p.fotos = $$('#rows-fotos .row').map((r) => {
+      const f = { src: $('[data-k=src]', r).value.trim(), alt: $('[data-k=alt]', r).value.trim() };
+      const cor = $('[data-k=cor]', r).value.trim();
+      if (cor) f.cor = cor;
+      return f;
+    }).filter((x) => x.src);
     return p;
   }
 
@@ -305,7 +311,7 @@
   function fillLoja() {
     const l = data.loja || {};
     const f = $('#lform');
-    ['instagram', 'encomendas', 'entrega', 'pagamento'].forEach((k) => { f.elements[k].value = l[k] || ''; });
+    ['instagram', 'whatsapp', 'encomendas', 'entrega', 'pagamento'].forEach((k) => { f.elements[k].value = l[k] || ''; });
     const g = Array.from({ length: 6 }, (_, i) => (l.galeriaInstagram || [])[i] || {});
     $('#rows-insta').innerHTML = g.map((x, i) => `
       <div class="grid three" style="margin-bottom:10px">
@@ -367,8 +373,9 @@
     e.preventDefault();
     const f = e.target;
     const l = { ...(data.loja || {}) };
-    ['instagram', 'encomendas', 'entrega', 'pagamento'].forEach((k) => { l[k] = f.elements[k].value.trim(); });
+    ['instagram', 'whatsapp', 'encomendas', 'entrega', 'pagamento'].forEach((k) => { l[k] = f.elements[k].value.trim(); });
     l.instagram = l.instagram.replace(/^@/, '');
+    l.whatsapp = l.whatsapp.replace(/\D/g, '');
     l.galeriaInstagram = $$('#rows-insta .grid').map((r) => {
       const o = { imagem: $('[data-k=imagem]', r).value.trim(), legenda: $('[data-k=legenda]', r).value.trim() };
       const link = $('[data-k=link]', r).value.trim();

@@ -82,7 +82,7 @@
 <header class="site-header" id="topo">
   <div class="container header-inner">
     <a class="brand" href="#inicio" aria-label="Crochês da Bita · início">
-      <img src="assets/brand/logo-marrom.png" alt="Crochês da Bita" width="991" height="938">
+      <img src="assets/brand/monograma-marrom.png" alt="Crochês da Bita" width="696" height="700">
     </a>
 
     <nav class="main-nav" id="menu" aria-label="Navegação principal">
@@ -367,7 +367,7 @@
     <button type="button" class="pdp-back" data-close-pdp>
       <svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg> <span>Voltar ao catálogo</span>
     </button>
-    <img class="pdp-bar-logo" src="assets/brand/logo-marrom.png" alt="" width="991" height="938">
+    <img class="pdp-bar-logo" src="assets/brand/monograma-marrom.png" alt="" width="696" height="700">
     <button type="button" class="icon-btn" data-close-pdp aria-label="Fechar detalhes da bolsa">
       <svg class="icon"><use href="#i-close"/></svg>
     </button>
@@ -400,9 +400,13 @@
 
         <div class="pdp-cta">
           <button type="button" class="btn btn-primary btn-block" id="pdp-interest">Tenho interesse nesta bolsa</button>
+          <!-- Conversa direta com a Bita no WhatsApp, com o nome do produto na mensagem -->
+          <a class="btn btn-dark btn-block" id="pdp-wa-contact" href="#" target="_blank" rel="noopener">
+            <svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg> Falar no WhatsApp
+          </a>
           <div class="pdp-share">
             <a class="btn btn-ghost btn-sm" id="pdp-whatsapp" href="#" target="_blank" rel="noopener">
-              <svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg> Enviar pelo WhatsApp
+              <svg class="icon" aria-hidden="true"><use href="#i-share"/></svg> Compartilhar no WhatsApp
             </a>
             <button type="button" class="btn btn-ghost btn-sm" id="pdp-copy-link">
               <svg class="icon" aria-hidden="true"><use href="#i-link"/></svg> Copiar link
@@ -432,6 +436,9 @@
       <span class="mb-name" id="pdp-mb-name"></span>
       <span class="mb-price" id="pdp-mb-price"></span>
     </div>
+    <a class="btn btn-dark btn-round" id="pdp-mb-wa" href="#" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+      <svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>
+    </a>
     <button type="button" class="btn btn-primary" id="pdp-mb-interest">Tenho interesse</button>
   </div>
 </dialog>

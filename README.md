@@ -2,7 +2,7 @@
 
 Site estático (HTML, CSS e JavaScript, sem servidor nem banco de dados), pensado primeiro para o celular. As bolsas ficam todas no arquivo `products.json`: para cadastrar, editar ou remover uma bolsa, não é preciso mexer no layout.
 
-> **Situação atual:** o catálogo tem 3 peças reais, com fotos reais: Bolsa Trança, Bolsa Aba com Mini Bolsa e Sousplat Trançado. **Nomes, preços, medidas e disponibilidade ainda são provisórios** (preço "Sob consulta", status "Consulte a disponibilidade") e o site mostra um aviso de "catálogo em montagem". Quando a Bita confirmar os dados, preencha no editor e desmarque *Dados provisórios* (veja a lista de verificação no fim deste arquivo).
+> **Situação atual:** o catálogo tem 7 peças reais, com fotos reais e tratadas: Bolsa Trança (em 5 cores), Bolsa Concha, Bolsa Aba com Mini Bolsa, Bolsa Corrente, Porta-Garrafa, Sousplat Trançado e Sousplat Rendado. **Nomes, preços, medidas e disponibilidade ainda são provisórios** (preço "Sob consulta", status "Consulte a disponibilidade") e o site mostra um aviso de "catálogo em montagem". Quando a Bita confirmar os dados, preencha no editor e desmarque *Dados provisórios* (veja a lista de verificação no fim deste arquivo).
 
 ---
 
@@ -37,7 +37,9 @@ e abra o endereço que aparecer (algo como `http://localhost:3000`). Depois de p
 
 ## 1. Inserir as fotografias reais
 
-As fotos atuais vieram da pasta do Drive: 4 por peça, além da foto principal do topo e de 6 na galeria do Instagram. Todas foram recortadas e reduzidas, ficando entre 80 e 290 KB cada. Para novas peças, siga o mesmo padrão.
+As fotos atuais vieram da pasta do Drive e passaram por curadoria: até 4 por peça (ou por cor), além da foto principal do topo e de 6 na galeria do Instagram. Todas foram endireitadas, enquadradas em 4:5 e tratadas da mesma forma: luz amarelada neutralizada, níveis, contraste e nitidez. Fotos pequenas não foram ampliadas. Para novas peças, siga o mesmo padrão.
+
+**Peças com várias cores:** em cada foto, preencha `"cor"` com o nome exato de uma das cores da peça. Ao tocar na bolinha da cor, a galeria mostra só as fotos dela; com o filtro de cor do catálogo, o cartão também mostra a foto da cor filtrada. O link da página acompanha a cor (ex.: `?bolsa=bolsa-tranca&cor=Azul-marinho`).
 
 **Formato recomendado:** JPG ou WebP, em pé, proporção **4:5** (por exemplo 1200 × 1500 px), até cerca de 300 KB cada. Use nomes sem acento e sem espaço: `bolsa-aurora-1.jpg`, `bolsa-aurora-2.jpg`…
 
@@ -124,19 +126,23 @@ No app do Instagram: **Perfil → Editar perfil → Links → Adicionar link ext
 
 ## Como funciona o contato
 
-O botão **Tenho interesse nesta bolsa** monta uma mensagem com o nome da bolsa, a cor escolhida, o código e o link. A cliente toca em **Copiar e abrir Instagram**: a mensagem é copiada e abre a conversa com @crochesdabita (link `ig.me/m/crochesdabita`), onde ela cola o texto. O Instagram não permite deixar a mensagem já escrita na conversa, por isso ela é copiada.
+**WhatsApp:** na página de cada peça, o botão **Falar no WhatsApp** (e o ícone verde-escuro na barra fixa do celular) abre uma conversa com a Bita já com a mensagem "Olá, Bita! Vi o produto [nome da peça] e gostaria de mais informações.". O número fica em `products.json`, em `loja.whatsapp` (só dígitos, com DDI e DDD: `5511952251458`), e também pode ser trocado no editor.
+
+**Instagram:** O botão **Tenho interesse nesta bolsa** monta uma mensagem com o nome da bolsa, a cor escolhida, o código e o link. A cliente toca em **Copiar e abrir Instagram**: a mensagem é copiada e abre a conversa com @crochesdabita (link `ig.me/m/crochesdabita`), onde ela cola o texto. O Instagram não permite deixar a mensagem já escrita na conversa, por isso ela é copiada.
 
 ## Identidade visual
 
 - Cores e fontes ficam em `:root`, no início do `styles.css`.
 - A paleta foi mantida. A única adaptação é o coral dos botões (`--coral-cta: #DB3236`), um tom um pouco mais profundo que o `#FF4747`, para o texto branco ficar legível (contraste de acessibilidade). O `#FF4747` original continua nos destaques grandes, como os títulos em itálico.
-- A logo enviada (versão em preto) foi convertida para marrom chocolate e off-white com fundo transparente, **sem redesenho nem mudança de proporção**. O original está em `assets/brand/logo-original.webp`. O favicon usa o monograma B recortado da própria logo.
+- A logo enviada (versão em preto) foi convertida para marrom chocolate e off-white com fundo transparente, **sem redesenho nem mudança de proporção**. O original está em `assets/brand/logo-original.webp`. O cabeçalho, a barra da página da peça e o ícone da aba do navegador usam só o monograma B, recortado da própria logo (`monograma-marrom.png`). A logo completa aparece no rodapé e na etiqueta de cuidados.
 - Fontes: Cormorant Garamond (títulos) e Jost (textos), via Google Fonts.
 
 ## Lista de verificação antes de publicar
 
 - [x] Trocar os produtos demonstrativos e as ilustrações pelas peças e fotos reais.
-- [ ] Confirmar com a Bita os nomes, preços, medidas, composição do fio e disponibilidade das 3 peças, e marcar `provisorio: false`.
+- [ ] Confirmar com a Bita os nomes, preços, medidas, composição do fio e disponibilidade das 7 peças, e marcar `provisorio: false`.
+- [ ] Conferir os nomes das cores (ex.: "Marrom e off-white", "Caramelo") e o material da Bolsa Concha e dos sousplats.
+- [ ] Enviar fotos melhores da Bolsa Corrente (só há uma, de resolução baixa) e do Sousplat Rendado caramelo (a foto atual ficou de fora por estar borrada).
 - [ ] Confirmar se a mini bolsa é vendida junto com a bolsa de aba ou separada.
 - [ ] Incluir as fotos de "Sobre a marca" (artesã, processo de produção, materiais e fios).
 - [ ] Preencher entrega e pagamento em *Informações da loja* (ou deixar em branco para não exibir).
