@@ -37,13 +37,13 @@ e abra o endereço que aparecer (algo como `http://localhost:3000`). Depois de p
 
 ## 1. Inserir as fotografias reais
 
-As fotos atuais vieram da pasta do Drive: 4 por peça, além da foto principal do topo, 2 em "Sobre a marca" e 6 na galeria do Instagram. Todas foram recortadas e reduzidas, ficando entre 80 e 290 KB cada. Para novas peças, siga o mesmo padrão.
+As fotos atuais vieram da pasta do Drive: 4 por peça, além da foto principal do topo e de 6 na galeria do Instagram. Todas foram recortadas e reduzidas, ficando entre 80 e 290 KB cada. Para novas peças, siga o mesmo padrão.
 
 **Formato recomendado:** JPG ou WebP, em pé, proporção **4:5** (por exemplo 1200 × 1500 px), até cerca de 300 KB cada. Use nomes sem acento e sem espaço: `bolsa-aurora-1.jpg`, `bolsa-aurora-2.jpg`…
 
 - **Fotos das bolsas:** coloque os arquivos em `assets/img/produtos/` e informe os caminhos no cadastro da bolsa (campo *Fotografias* do editor, ou `fotos` no `products.json`). A primeira foto é a principal. A segunda aparece quando o mouse passa sobre o cartão, no computador.
 - **Foto principal do topo (hero):** basta substituir o arquivo `assets/img/site/hero.jpg` por outro com o mesmo nome.
-- **Fotos da seção "Sobre a marca":** duas já usam fotos reais (sacola e embalagem). O espaço "Foto da artesã" ainda está reservado: no `index.html`, troque o `<div class="slot-inner">…</div>` dele por `<img src="assets/img/site/artesa.jpg" alt="Descrição da foto">`.
+- **Fotos da seção "Sobre a marca":** os três espaços (artesã, processo de produção e materiais e fios) ainda estão reservados. Quando tiver as fotos, troque no `index.html` o `<div class="slot-inner">…</div>` de cada um por `<img src="assets/img/site/artesa.jpg" alt="Descrição da foto">`.
 - **Galeria do Instagram (6 fotos):** salve em `assets/img/site/` (ex.: `insta-1.jpg`) e preencha em *Informações da loja e galeria do Instagram*, no editor (ou em `loja.galeriaInstagram`, no `products.json`). O link da publicação é opcional; sem ele, a foto leva ao perfil.
 
 ## 2. Cadastrar uma nova bolsa
@@ -138,7 +138,7 @@ O botão **Tenho interesse nesta bolsa** monta uma mensagem com o nome da bolsa,
 - [x] Trocar os produtos demonstrativos e as ilustrações pelas peças e fotos reais.
 - [ ] Confirmar com a Bita os nomes, preços, medidas, composição do fio e disponibilidade das 3 peças, e marcar `provisorio: false`.
 - [ ] Confirmar se a mini bolsa é vendida junto com a bolsa de aba ou separada.
-- [ ] Incluir a foto da artesã em "Sobre a marca".
+- [ ] Incluir as fotos de "Sobre a marca" (artesã, processo de produção, materiais e fios).
 - [ ] Preencher entrega e pagamento em *Informações da loja* (ou deixar em branco para não exibir).
 - [ ] Se o endereço mudar, ajustar `og:image`, `og:url` e `canonical` no `index.html` (passo 6).
 - [ ] Testar um link de bolsa no WhatsApp e o botão do Instagram no celular.
