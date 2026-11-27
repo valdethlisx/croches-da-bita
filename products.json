@@ -37,7 +37,6 @@
         { "nome": "Pink", "hex": "#D21F68" },
         { "nome": "Azul-marinho", "hex": "#262B45" },
         { "nome": "Marrom e off-white", "hex": "#4A2A1E" },
-        { "nome": "Caramelo", "hex": "#B08868" },
         { "nome": "Colorida", "hex": "#F2A31B" }
       ],
       "fotos": [
@@ -48,7 +47,6 @@
         { "src": "assets/img/produtos/bolsa-tranca-marinho-1.jpg", "alt": "Bolsa Trança azul-marinho segurada pela alça trançada", "cor": "Azul-marinho" },
         { "src": "assets/img/produtos/bolsa-tranca-marinho-2.jpg", "alt": "Bolsa Trança azul-marinho com borla, vista de frente", "cor": "Azul-marinho" },
         { "src": "assets/img/produtos/bolsa-tranca-marrom-1.jpg", "alt": "Bolsa Trança marrom com faixa off-white, alça trançada bicolor e corrente dourada", "cor": "Marrom e off-white" },
-        { "src": "assets/img/produtos/bolsa-tranca-caramelo-1.jpg", "alt": "Bolsa Trança caramelo com borla", "cor": "Caramelo" },
         { "src": "assets/img/produtos/bolsa-tranca-colorida-1.jpg", "alt": "Bolsa Trança colorida com listras, borla e corrente dourada", "cor": "Colorida" },
         { "src": "assets/img/produtos/bolsa-tranca-colorida-2.jpg", "alt": "Bolsa Trança colorida aberta, mostrando o forro amarelo", "cor": "Colorida" }
       ],
@@ -151,6 +149,38 @@
       ],
       "fotos": [
         { "src": "assets/img/produtos/bolsa-corrente-1.jpg", "alt": "Bolsa azul-marinho de crochê com corrente dourada na frente" }
+      ],
+      "disponibilidade": "consultar",
+      "prazoProducao": "",
+      "exclusiva": false,
+      "novidade": false,
+      "destaque": false,
+      "dataInclusao": "2026-11-26",
+      "ficticio": false,
+      "provisorio": true
+    },
+    {
+      "id": "CB-008",
+      "slug": "bolsa-alca-reta",
+      "nome": "Bolsa Alça Reta",
+      "modelo": "Alça reta",
+      "categoria": "De mão",
+      "descricao": "Bolsa caramelo em fio de malha com alça reta, argola dourada e borla no mesmo fio.",
+      "preco": null,
+      "altura": "",
+      "largura": "",
+      "profundidade": "",
+      "comprimentoAlca": "",
+      "material": "Fio de malha",
+      "composicao": "",
+      "fechamento": "",
+      "forro": "",
+      "ferragens": "Argola dourada e borla no mesmo fio",
+      "cores": [
+        { "nome": "Caramelo", "hex": "#B08868" }
+      ],
+      "fotos": [
+        { "src": "assets/img/produtos/bolsa-alca-reta-1.jpg", "alt": "Bolsa caramelo de crochê com alça reta, argola dourada e borla" }
       ],
       "disponibilidade": "consultar",
       "prazoProducao": "",

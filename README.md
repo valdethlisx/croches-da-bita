@@ -2,7 +2,7 @@
 
 Site estático (HTML, CSS e JavaScript, sem servidor nem banco de dados), pensado primeiro para o celular. As bolsas ficam todas no arquivo `products.json`: para cadastrar, editar ou remover uma bolsa, não é preciso mexer no layout.
 
-> **Situação atual:** o catálogo tem 7 peças reais, com fotos reais e tratadas: Bolsa Trança (em 5 cores), Bolsa Concha, Bolsa Aba com Mini Bolsa, Bolsa Corrente, Porta-Garrafa, Sousplat Trançado e Sousplat Rendado. **Nomes, preços, medidas e disponibilidade ainda são provisórios** (preço "Sob consulta", status "Consulte a disponibilidade") e o site mostra um aviso de "catálogo em montagem". Quando a Bita confirmar os dados, preencha no editor e desmarque *Dados provisórios* (veja a lista de verificação no fim deste arquivo).
+> **Situação atual:** o catálogo tem 8 peças reais, com fotos reais e tratadas: Bolsa Trança (em 4 cores), Bolsa Concha, Bolsa Aba com Mini Bolsa, Bolsa Corrente, Bolsa Alça Reta, Porta-Garrafa, Sousplat Trançado e Sousplat Rendado. **Nomes, preços, medidas e disponibilidade ainda são provisórios** (preço "Sob consulta", status "Consulte a disponibilidade") e o site mostra um aviso de "catálogo em montagem". Quando a Bita confirmar os dados, preencha no editor e desmarque *Dados provisórios* (veja a lista de verificação no fim deste arquivo).
 
 ---
 
@@ -142,8 +142,9 @@ O Instagram aparece no cabeçalho, na seção "Mais inspiração" e no rodapé, 
 ## Lista de verificação antes de publicar
 
 - [x] Trocar os produtos demonstrativos e as ilustrações pelas peças e fotos reais.
-- [ ] Confirmar com a Bita os nomes, preços, medidas, composição do fio e disponibilidade das 7 peças, e marcar `provisorio: false`.
+- [ ] Confirmar com a Bita os nomes, preços, medidas, composição do fio e disponibilidade das 8 peças, e marcar `provisorio: false`.
 - [ ] Conferir os nomes das cores (ex.: "Marrom e off-white", "Caramelo") e o material da Bolsa Concha e dos sousplats.
+- [ ] Enviar mais fotos da Bolsa Alça Reta (hoje há uma só).
 - [ ] Enviar fotos melhores da Bolsa Corrente (só há uma, de resolução baixa) e do Sousplat Rendado caramelo (a foto atual ficou de fora por estar borrada).
 - [ ] Confirmar se a mini bolsa é vendida junto com a bolsa de aba ou separada.
 - [ ] Incluir as fotos de "Sobre a marca" (artesã, processo de produção, materiais e fios).
