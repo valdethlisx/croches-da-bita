@@ -110,11 +110,12 @@
         <fieldset>
           <legend>Preço e disponibilidade</legend>
           <div class="grid two">
-            <label class="f">Preço (R$)<input name="preco" type="number" inputmode="decimal" min="0" step="0.01" placeholder="189.90"></label>
+            <label class="f">Preço (R$)<input name="preco" type="number" inputmode="decimal" min="0" step="0.01" placeholder="189.90"><span class="hint">Deixe vazio para mostrar “Sob consulta”.</span></label>
             <label class="f">Disponibilidade
               <select name="disponibilidade">
                 <option value="pronta-entrega">Pronta entrega</option>
                 <option value="sob-encomenda">Sob encomenda</option>
+                <option value="consultar">Consulte a disponibilidade</option>
                 <option value="esgotada">Esgotada</option>
               </select>
             </label>
@@ -124,6 +125,7 @@
             <label><input type="checkbox" name="novidade"> Novidade</label>
             <label><input type="checkbox" name="exclusiva"> Peça exclusiva</label>
             <label><input type="checkbox" name="destaque"> Destaque</label>
+            <label><input type="checkbox" name="provisorio"> Dados provisórios (a confirmar)</label>
             <label><input type="checkbox" name="ficticio"> Dados fictícios (demonstração)</label>
           </div>
         </fieldset>
@@ -209,8 +211,8 @@
   const slugify = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
   const TEXT = ['id', 'slug', 'nome', 'modelo', 'categoria', 'descricao', 'altura', 'largura', 'profundidade', 'comprimentoAlca', 'material', 'composicao', 'fechamento', 'forro', 'ferragens', 'disponibilidade', 'prazoProducao', 'dataInclusao'];
-  const BOOL = ['exclusiva', 'novidade', 'destaque', 'ficticio'];
-  const DISP = { 'pronta-entrega': 'Pronta entrega', 'sob-encomenda': 'Sob encomenda', 'esgotada': 'Esgotada' };
+  const BOOL = ['exclusiva', 'novidade', 'destaque', 'ficticio', 'provisorio'];
+  const DISP = { 'pronta-entrega': 'Pronta entrega', 'sob-encomenda': 'Sob encomenda', 'consultar': 'Consulte a disponibilidade', 'esgotada': 'Esgotada' };
 
   let data = { produtos: [], loja: {} };
   let sel = -1; // índice da bolsa em edição (-1 = nova)
@@ -244,7 +246,7 @@
     $('#plist').innerHTML = data.produtos.map((p, i) => `
       <li data-i="${i}" class="${i === sel ? 'active' : ''}" tabindex="0" role="button" aria-label="Editar ${esc(p.nome)}">
         <img src="${esc(p.fotos?.[0]?.src || '')}" alt="">
-        <div><span class="n">${esc(p.nome)}</span><small>${p.preco != null ? brl.format(p.preco) : ''} · ${esc(DISP[p.disponibilidade] || '')}${p.ficticio ? ' · fictício' : ''}</small></div>
+        <div><span class="n">${esc(p.nome)}</span><small>${p.preco != null ? brl.format(p.preco) : 'Sob consulta'} · ${esc(DISP[p.disponibilidade] || '')}${p.ficticio ? ' · fictício' : ''}${p.provisorio ? ' · provisório' : ''}</small></div>
       </li>`).join('');
     const uniq = (k) => [...new Set(data.produtos.map((p) => p[k]).filter(Boolean))];
     $('#dl-modelos').innerHTML = uniq('modelo').map((v) => `<option value="${esc(v)}">`).join('');
@@ -290,7 +292,7 @@
     if (!p.nome) return 'Preencha o nome da bolsa.';
     if (!p.id) return 'Preencha o código de referência.';
     if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(p.slug)) return 'O slug deve ter só letras minúsculas, números e hífens.';
-    if (p.preco == null || !(p.preco >= 0)) return 'Informe o preço em reais (ex.: 189.90).';
+    if (p.preco != null && !(p.preco >= 0)) return 'Informe o preço em reais (ex.: 189.90) ou deixe vazio para “Sob consulta”.';
     const dupSlug = data.produtos.findIndex((x, i) => i !== sel && x.slug === p.slug);
     if (dupSlug >= 0) return `Já existe uma bolsa com o slug “${p.slug}”.`;
     const dupId = data.produtos.findIndex((x, i) => i !== sel && x.id === p.id);

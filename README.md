@@ -2,7 +2,7 @@
 
 Site estático (HTML, CSS e JavaScript, sem servidor nem banco de dados), pensado primeiro para o celular. As bolsas ficam todas no arquivo `products.json`: para cadastrar, editar ou remover uma bolsa, não é preciso mexer no layout.
 
-> **Antes de publicar:** os 6 produtos que vêm no catálogo são **demonstrativos**. Nomes, preços, medidas, composições e prazos são fictícios, e as imagens são ilustrações provisórias. Troque tudo pelos dados e fotos reais (veja a lista de verificação no fim deste arquivo).
+> **Situação atual:** o catálogo tem 3 peças reais, com fotos reais: Bolsa Trança, Bolsa Aba com Mini Bolsa e Sousplat Trançado. **Nomes, preços, medidas e disponibilidade ainda são provisórios** (preço "Sob consulta", status "Consulte a disponibilidade") e o site mostra um aviso de "catálogo em montagem". Quando a Bita confirmar os dados, preencha no editor e desmarque *Dados provisórios* (veja a lista de verificação no fim deste arquivo).
 
 ---
 
@@ -37,11 +37,13 @@ e abra o endereço que aparecer (algo como `http://localhost:3000`). Depois de p
 
 ## 1. Inserir as fotografias reais
 
+As fotos atuais vieram da pasta do Drive: 4 por peça, além da foto principal do topo, 2 em "Sobre a marca" e 6 na galeria do Instagram. Todas foram recortadas e reduzidas, ficando entre 80 e 290 KB cada. Para novas peças, siga o mesmo padrão.
+
 **Formato recomendado:** JPG ou WebP, em pé, proporção **4:5** (por exemplo 1200 × 1500 px), até cerca de 300 KB cada. Use nomes sem acento e sem espaço: `bolsa-aurora-1.jpg`, `bolsa-aurora-2.jpg`…
 
 - **Fotos das bolsas:** coloque os arquivos em `assets/img/produtos/` e informe os caminhos no cadastro da bolsa (campo *Fotografias* do editor, ou `fotos` no `products.json`). A primeira foto é a principal. A segunda aparece quando o mouse passa sobre o cartão, no computador.
-- **Foto principal do topo (hero):** salve como `assets/img/site/hero.jpg` e, no `index.html`, troque `assets/img/site/hero.svg` por `assets/img/site/hero.jpg` nos **dois** lugares onde aparece (a linha `<link rel="preload" …>` e a tag `<img>` do hero).
-- **Fotos da seção "Sobre a marca":** no `index.html`, cada `<figure class="photo-slot">` tem um espaço reservado. Troque o `<div class="slot-inner">…</div>` por `<img src="assets/img/site/artesa.jpg" alt="Descrição da foto">`.
+- **Foto principal do topo (hero):** basta substituir o arquivo `assets/img/site/hero.jpg` por outro com o mesmo nome.
+- **Fotos da seção "Sobre a marca":** duas já usam fotos reais (sacola e embalagem). O espaço "Foto da artesã" ainda está reservado: no `index.html`, troque o `<div class="slot-inner">…</div>` dele por `<img src="assets/img/site/artesa.jpg" alt="Descrição da foto">`.
 - **Galeria do Instagram (6 fotos):** salve em `assets/img/site/` (ex.: `insta-1.jpg`) e preencha em *Informações da loja e galeria do Instagram*, no editor (ou em `loja.galeriaInstagram`, no `products.json`). O link da publicação é opcional; sem ele, a foto leva ao perfil.
 
 ## 2. Cadastrar uma nova bolsa
@@ -65,27 +67,28 @@ Campos de cada bolsa:
 | `slug` | `"bolsa-flor"` | endereço da página da bolsa |
 | `nome`, `descricao` | | |
 | `modelo` | `"Baguete"` | vira opção do filtro *Modelo* |
-| `categoria` | `"Transversal"` | vira opção do filtro *Tipo de bolsa* |
-| `preco` | `189.9` | número com **ponto**, sem "R$" |
+| `categoria` | `"Transversal"`, `"Mesa posta"` | vira opção do filtro *Tipo de peça*; com "Mesa posta", o botão diz "nesta peça" em vez de "nesta bolsa" |
+| `preco` | `189.9` ou `null` | número com **ponto**, sem "R$"; `null` (vazio no editor) mostra "Sob consulta" |
 | `altura`, `largura`, `profundidade`, `comprimentoAlca` | `"16 cm"` | texto livre |
 | `material`, `composicao`, `fechamento`, `forro`, `ferragens` | | texto livre; campos vazios não aparecem |
 | `cores` | `[{ "nome": "Caramelo", "hex": "#B9875A" }]` | `hex` é o tom da bolinha de cor |
 | `fotos` | `[{ "src": "assets/img/produtos/…", "alt": "…" }]` | `alt` descreve a foto |
-| `disponibilidade` | `"pronta-entrega"`, `"sob-encomenda"` ou `"esgotada"` | |
+| `disponibilidade` | `"pronta-entrega"`, `"sob-encomenda"`, `"consultar"` ou `"esgotada"` | `consultar` aparece como "Consulte a disponibilidade" |
 | `prazoProducao` | `"15 dias úteis"` | aparece só em *sob encomenda* |
 | `novidade`, `exclusiva`, `destaque` | `true` / `false` | etiquetas e ordem dos destaques |
 | `dataInclusao` | `"2026-11-26"` | usada em "Novidades" |
+| `provisorio` | `true` / `false` | `true` mostra o aviso de nome e dados a confirmar |
 | `ficticio` | `false` | `true` mostra o aviso de dados de demonstração |
 
 ## 3. Atualizar preços
 
-No editor, escolha a bolsa, altere **Preço (R$)**, salve, baixe o `products.json` e publique. No arquivo, mude o número em `"preco"` (ex.: `229.9`). O site formata em reais sozinho (R$ 229,90).
+No editor, escolha a bolsa, altere **Preço (R$)**, salve, baixe o `products.json` e publique. No arquivo, mude o número em `"preco"` (ex.: `229.9`). O site formata em reais sozinho (R$ 229,90). Com o preço vazio, aparece "Sob consulta".
 
-As faixas do filtro de preço (até R$ 150, R$ 150 a R$ 250, acima de R$ 250) ficam no início do `script.js`, em `faixasPreco`, se precisar ajustar.
+O filtro de preço só aparece quando pelo menos uma peça tem preço. As faixas do filtro (até R$ 150, R$ 150 a R$ 250, acima de R$ 250) ficam no início do `script.js`, em `faixasPreco`, se precisar ajustar.
 
 ## 4. Alterar a disponibilidade
 
-No editor, mude **Disponibilidade** para *Pronta entrega*, *Sob encomenda* ou *Esgotada*. Bolsas esgotadas continuam no catálogo, com a foto mais clara e no fim da lista, e o botão vira "Perguntar sobre uma nova produção". Para tirar uma bolsa do ar, use **Remover** no editor.
+No editor, mude **Disponibilidade** para *Pronta entrega*, *Sob encomenda*, *Consulte a disponibilidade* ou *Esgotada*. Bolsas esgotadas continuam no catálogo, com a foto mais clara e no fim da lista, e o botão vira "Perguntar sobre uma nova produção". Para tirar uma bolsa do ar, use **Remover** no editor.
 
 ## 5. Publicar o catálogo
 
@@ -121,7 +124,7 @@ No app do Instagram: **Perfil → Editar perfil → Links → Adicionar link ext
 
 ## Como funciona o contato
 
-O botão **Tenho interesse nesta bolsa** monta uma mensagem com o nome da bolsa, a cor escolhida, o código e o link. A cliente toca em **Copiar e abrir Instagram**: a mensagem é copiada e abre a conversa com @crochesdabita (link `ig.me/m/crochesdabita`), onde ela cola o texto. O Instagram não permite deixar a mensagem já escrita na conversa, por isso ela é copiada. O formulário **Monte sua consulta**, da seção Encomendas, funciona do mesmo jeito.
+O botão **Tenho interesse nesta bolsa** monta uma mensagem com o nome da bolsa, a cor escolhida, o código e o link. A cliente toca em **Copiar e abrir Instagram**: a mensagem é copiada e abre a conversa com @crochesdabita (link `ig.me/m/crochesdabita`), onde ela cola o texto. O Instagram não permite deixar a mensagem já escrita na conversa, por isso ela é copiada.
 
 ## Identidade visual
 
@@ -132,9 +135,10 @@ O botão **Tenho interesse nesta bolsa** monta uma mensagem com o nome da bolsa,
 
 ## Lista de verificação antes de publicar
 
-- [ ] Substituir os 6 produtos demonstrativos pelos reais (ou removê-los) e marcar `ficticio: false`.
-- [ ] Trocar as ilustrações por fotos reais (bolsas, hero, sobre, Instagram).
-- [ ] Conferir preços, medidas, composição do fio e prazos com a Bita.
+- [x] Trocar os produtos demonstrativos e as ilustrações pelas peças e fotos reais.
+- [ ] Confirmar com a Bita os nomes, preços, medidas, composição do fio e disponibilidade das 3 peças, e marcar `provisorio: false`.
+- [ ] Confirmar se a mini bolsa é vendida junto com a bolsa de aba ou separada.
+- [ ] Incluir a foto da artesã em "Sobre a marca".
 - [ ] Preencher entrega e pagamento em *Informações da loja* (ou deixar em branco para não exibir).
 - [ ] Se o endereço mudar, ajustar `og:image`, `og:url` e `canonical` no `index.html` (passo 6).
 - [ ] Testar um link de bolsa no WhatsApp e o botão do Instagram no celular.

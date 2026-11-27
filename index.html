@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 
-  <link rel="preload" href="assets/img/site/hero.svg" as="image">
+  <link rel="preload" href="assets/img/site/hero.jpg" as="image">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -90,7 +90,6 @@
         <li><a href="#inicio">Início</a></li>
         <li><a href="#catalogo">Catálogo</a></li>
         <li><a href="#sobre">Sobre a marca</a></li>
-        <li><a href="#encomendas">Encomendas</a></li>
         <li><a href="#cuidados">Cuidados</a></li>
       </ul>
       <a class="nav-instagram-mobile" href="https://www.instagram.com/crochesdabita/" target="_blank" rel="noopener">
@@ -137,7 +136,7 @@
 
       <figure class="hero-media reveal">
         <div class="hero-frame">
-          <img src="assets/img/site/hero.svg" alt="Bolsa artesanal de crochê em fio de malha coral" width="1200" height="1500" fetchpriority="high">
+          <img src="assets/img/site/hero.jpg" alt="Bolsa pink de crochê em fio de malha com alça trançada e corrente dourada" width="1200" height="1500" fetchpriority="high">
         </div>
         <figcaption><span>Atelier</span> Feita à mão, ponto por ponto.</figcaption>
       </figure>
@@ -159,20 +158,18 @@
     <div class="container">
       <header class="section-head">
         <p class="eyebrow reveal">Catálogo</p>
-        <h2 id="catalog-title" class="reveal">Bolsas feitas à mão</h2>
-        <p class="section-lead reveal">Cada modelo nasce do fio de malha trabalhado à mão. Escolha a sua e fale com a Bita para saber mais.</p>
+        <h2 id="catalog-title" class="reveal">Peças feitas à mão</h2>
+        <p class="section-lead reveal">Bolsas em fio de malha e peças para a mesa posta, feitas ponto por ponto. Escolha a sua e fale com a Bita para saber mais.</p>
       </header>
 
-      <p class="demo-notice" id="demo-notice" hidden>
-        <strong>Catálogo de demonstração.</strong> Os produtos, preços e medidas exibidos são fictícios e serão substituídos pelas peças reais.
-      </p>
+      <p class="demo-notice" id="demo-notice" hidden></p>
 
       <!-- Barra de busca e ordenação -->
       <div class="catalog-toolbar">
         <label class="search-field">
-          <span class="visually-hidden">Buscar bolsa pelo nome</span>
+          <span class="visually-hidden">Buscar peça pelo nome</span>
           <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
-          <input type="search" id="busca" placeholder="Buscar pelo nome da bolsa" autocomplete="off">
+          <input type="search" id="busca" placeholder="Buscar pelo nome da peça" autocomplete="off">
         </label>
 
         <div class="toolbar-right">
@@ -203,9 +200,10 @@
           </div>
           <form id="form-filtros" class="filters-body">
             <fieldset><legend>Modelo</legend><div class="chip-group" data-group="modelos"></div></fieldset>
-            <fieldset><legend>Tipo de bolsa</legend><div class="chip-group" data-group="categorias"></div></fieldset>
+            <fieldset><legend>Tipo de peça</legend><div class="chip-group" data-group="categorias"></div></fieldset>
             <fieldset><legend>Cor</legend><div class="swatch-group" data-group="cores"></div></fieldset>
-            <fieldset><legend>Faixa de preço</legend><div class="chip-group" data-group="preco"></div></fieldset>
+            <!-- A faixa de preço só aparece quando pelo menos uma peça tem preço cadastrado -->
+            <fieldset id="fs-preco"><legend>Faixa de preço</legend><div class="chip-group" data-group="preco"></div></fieldset>
             <fieldset><legend>Disponibilidade</legend><div class="chip-group" data-group="disponibilidade"></div></fieldset>
           </form>
           <div class="filters-foot">
@@ -222,49 +220,12 @@
           </div>
           <ul class="product-grid" id="product-grid"></ul>
           <div class="empty-state" id="empty-state" hidden>
-            <p class="empty-title">Nenhuma bolsa encontrada.</p>
+            <p class="empty-title">Nenhuma peça encontrada.</p>
             <p>Tente outra busca ou remova alguns filtros.</p>
             <button type="button" class="btn btn-ghost" id="empty-clear">Limpar filtros</button>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- ========================================================
-       ENCOMENDAS
-       ======================================================== -->
-  <section class="section custom texture" id="encomendas" aria-labelledby="custom-title">
-    <div class="container custom-grid">
-      <div class="custom-copy">
-        <p class="eyebrow reveal">Encomendas personalizadas</p>
-        <h2 id="custom-title" class="reveal">Seu estilo, <em>ponto por ponto.</em></h2>
-        <p class="reveal">Tem uma ideia de bolsa ou gostou de um modelo em outra cor? Conte para a Bita o que você imagina. Cada pedido é conversado com calma, e as possibilidades, os valores e os prazos são confirmados diretamente com ela.</p>
-        <ol class="custom-list reveal">
-          <li><span>01</span><div><strong>Modelo</strong><p>Um formato do catálogo ou uma referência sua.</p></div></li>
-          <li><span>02</span><div><strong>Cor do fio</strong><p>Consulte os tons de fio disponíveis no momento.</p></div></li>
-          <li><span>03</span><div><strong>Tamanho</strong><p>Conte como pretende usar a bolsa no dia a dia.</p></div></li>
-          <li><span>04</span><div><strong>Alça</strong><p>Curta, longa, de mão ou transversal: pergunte o que é possível.</p></div></li>
-          <li><span>05</span><div><strong>Ferragens</strong><p>Argolas, fechos e detalhes metálicos.</p></div></li>
-          <li><span>06</span><div><strong>Acabamentos</strong><p>Forro, fechamento e outros detalhes finais.</p></div></li>
-        </ol>
-      </div>
-
-      <form class="custom-form reveal" id="form-encomenda" aria-labelledby="custom-form-title">
-        <h3 id="custom-form-title">Monte sua consulta</h3>
-        <p class="form-hint">Preencha só o que quiser. Vamos montar uma mensagem para você enviar à Bita pelo Instagram.</p>
-        <div class="field"><label for="enc-modelo">Modelo</label><input id="enc-modelo" name="Modelo" type="text" placeholder="Ex.: parecido com a Bolsa Lua"></div>
-        <div class="field"><label for="enc-cor">Cor do fio</label><input id="enc-cor" name="Cor do fio" type="text" placeholder="Ex.: tons terrosos"></div>
-        <div class="field-row">
-          <div class="field"><label for="enc-tamanho">Tamanho</label><input id="enc-tamanho" name="Tamanho" type="text" placeholder="Ex.: médio"></div>
-          <div class="field"><label for="enc-alca">Alça</label><input id="enc-alca" name="Alça" type="text" placeholder="Ex.: transversal"></div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label for="enc-ferragens">Ferragens</label><input id="enc-ferragens" name="Ferragens" type="text" placeholder="Ex.: douradas"></div>
-          <div class="field"><label for="enc-acabamento">Acabamentos</label><input id="enc-acabamento" name="Acabamentos" type="text" placeholder="Ex.: com forro"></div>
-        </div>
-        <button class="btn btn-primary btn-block" type="submit">Consultar encomenda</button>
-      </form>
     </div>
   </section>
 
@@ -276,8 +237,8 @@
       <div class="about-media">
         <!-- Espaços reservados: troque cada <div class="photo-slot"> por <img src="..." alt="..."> -->
         <figure class="photo-slot slot-tall reveal"><div class="slot-inner"><span>Foto da artesã</span><small>em breve</small></div></figure>
-        <figure class="photo-slot reveal"><div class="slot-inner"><span>Processo de produção</span><small>em breve</small></div></figure>
-        <figure class="photo-slot slot-peach reveal"><div class="slot-inner"><span>Materiais e fios</span><small>em breve</small></div></figure>
+        <figure class="photo-slot reveal"><img src="assets/img/site/sobre-sacola.jpg" alt="Sacola kraft com a logo Crochês da Bita e uma bolsa pink de crochê" width="1000" height="1250" loading="lazy" decoding="async"></figure>
+        <figure class="photo-slot slot-peach reveal"><img src="assets/img/site/sobre-embalagem.jpg" alt="Embalagem da marca: sacola kraft e jogo de sousplats com cinta da logo" width="1000" height="1250" loading="lazy" decoding="async"></figure>
       </div>
       <div class="about-copy">
         <p class="eyebrow reveal">Sobre a marca</p>
@@ -380,7 +341,6 @@
         <li><a href="#inicio">Início</a></li>
         <li><a href="#catalogo">Catálogo</a></li>
         <li><a href="#sobre">Sobre a marca</a></li>
-        <li><a href="#encomendas">Encomendas</a></li>
         <li><a href="#cuidados">Cuidados</a></li>
       </ul>
     </nav>
@@ -457,7 +417,7 @@
           <h2>Detalhes da peça</h2>
           <dl id="pdp-specs"></dl>
         </div>
-        <p class="pdp-demo" id="pdp-demo" hidden>Produto demonstrativo: dados fictícios, que serão substituídos pelas informações reais.</p>
+        <p class="pdp-demo" id="pdp-demo" hidden></p>
       </div>
     </div>
 

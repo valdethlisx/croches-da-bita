@@ -24,6 +24,7 @@
   const DISPONIBILIDADE = {
     'pronta-entrega': 'Pronta entrega',
     'sob-encomenda': 'Sob encomenda',
+    'consultar': 'Consulte a disponibilidade',
     'esgotada': 'Esgotada',
   };
 
@@ -36,6 +37,13 @@
   const icon = (id) => `<svg class="icon" aria-hidden="true"><use href="#${id}"/></svg>`;
   const igProfile = () => `https://www.instagram.com/${CONFIG.instagramUser}/`;
   const igDirect = () => `https://ig.me/m/${CONFIG.instagramUser}`;
+
+  /** Preço cadastrado? (preço vazio/null = "Sob consulta") */
+  const temPreco = (p) => typeof p.preco === 'number' && isFinite(p.preco);
+  const precoTxt = (p) => (temPreco(p) ? brl.format(p.preco) : 'Sob consulta');
+  /** "bolsa" para bolsas, "peça" para itens de mesa posta e outros */
+  const ehBolsa = (p) => !/mesa/i.test(p.categoria || '');
+  const nomeTipo = (p) => (ehBolsa(p) ? 'bolsa' : 'peça');
 
   /** Endereço público de uma bolsa (funciona em qualquer hospedagem estática). */
   const productUrl = (slug) => {
@@ -132,6 +140,7 @@
 
     $('[data-group="preco"]').innerHTML = chip('preco', '', 'Todas', 'radio') + CONFIG.faixasPreco.map((f) => chip('preco', f.id, f.label, 'radio')).join('');
     $('[data-group="preco"] input[value=""]').checked = true;
+    $('#fs-preco').hidden = !P.some(temPreco); // sem preços cadastrados, o filtro não teria utilidade
 
     const disp = Object.keys(DISPONIBILIDADE).filter((k) => P.some((p) => p.disponibilidade === k));
     $('[data-group="disponibilidade"]').innerHTML = disp.map((k) => chip('disponibilidade', k, DISPONIBILIDADE[k])).join('');
@@ -172,7 +181,7 @@
     if (f.disponibilidade.size && !f.disponibilidade.has(p.disponibilidade)) return false;
     if (f.preco) {
       const faixa = CONFIG.faixasPreco.find((x) => x.id === f.preco);
-      if (faixa && !(p.preco >= faixa.min && p.preco < faixa.max)) return false;
+      if (faixa && !(temPreco(p) && p.preco >= faixa.min && p.preco < faixa.max)) return false;
     }
     return true;
   }
@@ -182,8 +191,9 @@
   const SORTS = {
     destaques: (a, b) => soldLast(a, b) || (!!b.destaque - !!a.destaque) || time(b) - time(a),
     novidades: (a, b) => time(b) - time(a),
-    menor: (a, b) => a.preco - b.preco,
-    maior: (a, b) => b.preco - a.preco,
+    // Peças "sob consulta" ficam no fim nas ordenações por preço
+    menor: (a, b) => (temPreco(b) - temPreco(a)) || (a.preco - b.preco),
+    maior: (a, b) => (temPreco(b) - temPreco(a)) || (b.preco - a.preco),
   };
 
   /* ==========================================================
@@ -220,7 +230,7 @@
           <p class="card-meta">${esc(p.categoria)} · ${esc(p.modelo)}</p>
           <h3 class="card-title">${esc(p.nome)}</h3>
           <div class="card-row">
-            <p class="card-price">${brl.format(p.preco)}</p>
+            <p class="card-price">${precoTxt(p)}</p>
             <div class="dots" role="img" aria-label="Cores disponíveis: ${esc(coresTxt)}">${cores}</div>
           </div>
           <p class="status status-${esc(p.disponibilidade)}">${esc(DISPONIBILIDADE[p.disponibilidade] || '')}</p>
@@ -239,7 +249,7 @@
     $('#product-grid').innerHTML = lista.map(cardHTML).join('');
     $('#empty-state').hidden = lista.length > 0;
     const n = lista.length;
-    $('#results-count').textContent = n === 1 ? '1 bolsa' : `${n} bolsas`;
+    $('#results-count').textContent = n === 1 ? '1 peça' : `${n} peças`;
 
     const count = activeFilterCount();
     const fc = $('#filter-count');
@@ -380,7 +390,7 @@
     $('#pdp-meta').textContent = `${p.categoria} · ${p.modelo} · Ref. ${p.id}`;
     $('#pdp-tags').innerHTML = tagsFor(p);
     $('#pdp-name').textContent = p.nome;
-    $('#pdp-price').textContent = brl.format(p.preco);
+    $('#pdp-price').textContent = temPreco(p) ? brl.format(p.preco) : 'Preço sob consulta';
     $('#pdp-desc').textContent = p.descricao || '';
 
     $('#pdp-thumbs').innerHTML = fotos.map((f, i) => `
@@ -391,7 +401,7 @@
     $('#pdp-swipe-hint').hidden = fotos.length < 2;
     setPhoto(0);
     $('#pdp-mb-name').textContent = p.nome;
-    $('#pdp-mb-price').textContent = brl.format(p.preco);
+    $('#pdp-mb-price').textContent = precoTxt(p);
     $('#pdp-mb-interest').textContent = p.disponibilidade === 'esgotada' ? 'Consultar' : 'Tenho interesse';
 
     $('#pdp-swatches').innerHTML = (p.cores || []).map((c) => `
@@ -403,7 +413,7 @@
       <p class="status status-${esc(p.disponibilidade)}" style="margin:0">${esc(st)}</p>
       ${p.prazoProducao && p.disponibilidade === 'sob-encomenda' ? `<small>Prazo de produção: ${esc(p.prazoProducao)}</small>` : ''}`;
 
-    $('#pdp-interest').textContent = p.disponibilidade === 'esgotada' ? 'Perguntar sobre uma nova produção' : 'Tenho interesse nesta bolsa';
+    $('#pdp-interest').textContent = p.disponibilidade === 'esgotada' ? 'Perguntar sobre uma nova produção' : `Tenho interesse nesta ${nomeTipo(p)}`;
 
     $('#pdp-specs').innerHTML = [
       specRow('Altura', p.altura),
@@ -418,7 +428,11 @@
       specRow('Referência', p.id),
     ].join('');
 
-    $('#pdp-demo').hidden = !p.ficticio;
+    const aviso = p.ficticio
+      ? 'Produto demonstrativo: dados fictícios, que serão substituídos pelas informações reais.'
+      : p.provisorio ? 'Nome provisório. Preço, medidas e demais detalhes estão sendo confirmados; fale com a Bita pelo Instagram.' : '';
+    $('#pdp-demo').textContent = aviso;
+    $('#pdp-demo').hidden = !aviso;
 
     const url = productUrl(p.slug);
     $('#pdp-whatsapp').href = `https://wa.me/?text=${encodeURIComponent(`${p.nome} · Crochês da Bita\n${url}`)}`;
@@ -610,18 +624,6 @@
       toast(ok ? 'Mensagem copiada' : 'Não foi possível copiar');
     });
     contact.addEventListener('click', (e) => { if (e.target === contact) contact.close(); });
-
-    // Formulário de encomenda
-    $('#form-encomenda').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const itens = $$('input', e.target)
-        .filter((i) => i.value.trim())
-        .map((i) => `• ${i.name}: ${i.value.trim()}`);
-      let msg = 'Olá, Bita! Vi o catálogo e gostaria de consultar uma encomenda personalizada.';
-      if (itens.length) msg += `\n\n${itens.join('\n')}`;
-      msg += '\n\nPode me contar o que é possível?';
-      openContact(msg);
-    });
   }
 
   /* ==========================================================
@@ -645,7 +647,16 @@
     if (loja.entrega) ig.insertAdjacentHTML('beforebegin', `<p><strong>Entrega:</strong> ${esc(loja.entrega)}</p>`);
     if (loja.pagamento) ig.insertAdjacentHTML('beforebegin', `<p><strong>Pagamento:</strong> ${esc(loja.pagamento)}</p>`);
 
-    $('#demo-notice').hidden = !state.produtos.some((p) => p.ficticio);
+    const notice = $('#demo-notice');
+    if (state.produtos.some((p) => p.ficticio)) {
+      notice.innerHTML = '<strong>Catálogo de demonstração.</strong> Os produtos, preços e medidas exibidos são fictícios e serão substituídos pelas peças reais.';
+      notice.hidden = false;
+    } else if (state.produtos.some((p) => p.provisorio)) {
+      notice.innerHTML = '<strong>Catálogo em montagem.</strong> Nomes, preços e medidas ainda estão sendo confirmados. Para saber mais sobre uma peça, fale com a Bita pelo Instagram.';
+      notice.hidden = false;
+    } else {
+      notice.hidden = true;
+    }
   }
 
   /* ==========================================================
