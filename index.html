@@ -399,10 +399,9 @@
         <div class="pdp-availability" id="pdp-availability"></div>
 
         <div class="pdp-cta">
-          <button type="button" class="btn btn-primary btn-block" id="pdp-interest">Tenho interesse nesta bolsa</button>
-          <!-- Conversa direta com a Bita no WhatsApp, com o nome do produto na mensagem -->
-          <a class="btn btn-dark btn-block" id="pdp-wa-contact" href="#" target="_blank" rel="noopener">
-            <svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg> Falar no WhatsApp
+          <!-- Abre a conversa com a Bita no WhatsApp, com o nome do produto na mensagem -->
+          <a class="btn btn-primary btn-block" id="pdp-interest" href="#" target="_blank" rel="noopener">
+            <svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg> <span id="pdp-interest-label">Tenho interesse nesta bolsa</span>
           </a>
           <div class="pdp-share">
             <a class="btn btn-ghost btn-sm" id="pdp-whatsapp" href="#" target="_blank" rel="noopener">
@@ -436,10 +435,9 @@
       <span class="mb-name" id="pdp-mb-name"></span>
       <span class="mb-price" id="pdp-mb-price"></span>
     </div>
-    <a class="btn btn-dark btn-round" id="pdp-mb-wa" href="#" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
-      <svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>
+    <a class="btn btn-primary" id="pdp-mb-interest" href="#" target="_blank" rel="noopener">
+      <svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg> <span id="pdp-mb-interest-label">Tenho interesse</span>
     </a>
-    <button type="button" class="btn btn-primary" id="pdp-mb-interest">Tenho interesse</button>
   </div>
 </dialog>
 
@@ -450,27 +448,6 @@
   <div class="lb-stage" id="lb-stage"><img id="lb-img" alt=""></div>
   <button type="button" class="icon-btn lb-nav lb-next" id="lb-next" aria-label="Próxima imagem"><svg class="icon"><use href="#i-chevron-right"/></svg></button>
   <p class="lb-hint">Clique na imagem para aproximar · <span id="lb-count"></span></p>
-</dialog>
-
-<!-- Contato pelo Instagram -->
-<dialog class="contact" id="contact" aria-labelledby="contact-title">
-  <form method="dialog" class="contact-inner">
-    <button type="submit" class="icon-btn contact-close" aria-label="Fechar"><svg class="icon"><use href="#i-close"/></svg></button>
-    <p class="eyebrow">Fale com a Bita</p>
-    <h2 id="contact-title">Sua mensagem está pronta</h2>
-    <p class="contact-help">Copie a mensagem abaixo, abra o Instagram e cole na conversa com <strong>@crochesdabita</strong>. Se quiser, edite o texto antes.</p>
-    <label class="visually-hidden" for="contact-message">Mensagem</label>
-    <textarea id="contact-message" rows="5"></textarea>
-    <div class="contact-actions">
-      <a class="btn btn-primary" id="contact-open" href="https://ig.me/m/crochesdabita" target="_blank" rel="noopener">
-        <svg class="icon" aria-hidden="true"><use href="#i-instagram"/></svg> Copiar e abrir Instagram
-      </a>
-      <button type="button" class="btn btn-ghost" id="contact-copy">
-        <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg> Só copiar
-      </button>
-    </div>
-    <p class="contact-alt">Não abriu a conversa? <a href="https://www.instagram.com/crochesdabita/" target="_blank" rel="noopener">Acesse o perfil @crochesdabita</a> e toque em “Mensagem”.</p>
-  </form>
 </dialog>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

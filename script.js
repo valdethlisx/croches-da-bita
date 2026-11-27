@@ -37,7 +37,6 @@
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const icon = (id) => `<svg class="icon" aria-hidden="true"><use href="#${id}"/></svg>`;
   const igProfile = () => `https://www.instagram.com/${CONFIG.instagramUser}/`;
-  const igDirect = () => `https://ig.me/m/${CONFIG.instagramUser}`;
 
   /** Preço cadastrado? (preço vazio/null = "Sob consulta") */
   const temPreco = (p) => typeof p.preco === 'number' && isFinite(p.preco);
@@ -46,8 +45,14 @@
   const ehBolsa = (p) => !/mesa|acess/i.test(p.categoria || '');
   const nomeTipo = (p) => (ehBolsa(p) ? 'bolsa' : 'peça');
 
-  /** Conversa no WhatsApp da Bita com a mensagem do produto */
-  const waContato = (p) => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(`Olá, Bita! Vi o produto ${p.nome} e gostaria de mais informações.`)}`;
+  /**
+   * Conversa no WhatsApp da Bita com a mensagem do produto.
+   * Em peças com mais de uma cor, a cor escolhida entra junto do nome.
+   */
+  const waContato = (p, cor) => {
+    const nome = cor && (p.cores || []).length > 1 ? `${p.nome} (cor ${cor})` : p.nome;
+    return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(`Olá, Bita! Vi o produto ${nome} e gostaria de mais informações.`)}`;
+  };
 
   /** Fotos de uma cor (fotos sem "cor" valem para todas). Sem fotos da cor, devolve todas. */
   function fotosPara(p, cor) {
@@ -418,14 +423,9 @@
       history.replaceState(history.state, '', url);
     }
     $('#pdp-whatsapp').href = `https://wa.me/?text=${encodeURIComponent(`${current.nome} · Crochês da Bita\n${productUrl(current.slug, corDoLink())}`)}`;
-  }
-
-  function interestMessage() {
-    const p = current;
-    let msg = `Olá, Bita! Conheci o modelo ${p.nome} pelo catálogo e gostaria de saber mais sobre ele.`;
-    if (currentColor && (p.cores || []).length > 1) msg += ` Tenho interesse na cor ${currentColor}.`;
-    msg += `\n\nRef.: ${p.id}\n${productUrl(p.slug, corDoLink())}`;
-    return msg;
+    // "Tenho interesse" abre o WhatsApp da Bita com o produto (e a cor) na mensagem
+    $('#pdp-interest').href = waContato(current, currentColor);
+    $('#pdp-mb-interest').href = waContato(current, currentColor);
   }
 
   function fillProduct(p, corInicial) {
@@ -440,7 +440,7 @@
 
     $('#pdp-mb-name').textContent = p.nome;
     $('#pdp-mb-price').textContent = precoTxt(p);
-    $('#pdp-mb-interest').textContent = p.disponibilidade === 'esgotada' ? 'Consultar' : 'Tenho interesse';
+    $('#pdp-mb-interest-label').textContent = p.disponibilidade === 'esgotada' ? 'Consultar' : 'Tenho interesse';
 
     $('#pdp-swatches').innerHTML = (p.cores || []).map((c) => `
       <button type="button" role="radio" aria-checked="false" data-cor="${esc(c.nome)}" style="--c:${esc(c.hex)}" aria-label="${esc(c.nome)}" title="${esc(c.nome)}"></button>`).join('');
@@ -448,15 +448,13 @@
     currentColor = null;
     setColor(cores.includes(corInicial) ? corInicial : (cores[0] || null));
     if (!currentFotos.length) { currentFotos = fotosPara(p, currentColor); renderGallery(); }
-    $('#pdp-wa-contact').href = waContato(p);
-    $('#pdp-mb-wa').href = waContato(p);
 
     const st = DISPONIBILIDADE[p.disponibilidade] || '';
     $('#pdp-availability').innerHTML = `
       <p class="status status-${esc(p.disponibilidade)}" style="margin:0">${esc(st)}</p>
       ${p.prazoProducao && p.disponibilidade === 'sob-encomenda' ? `<small>Prazo de produção: ${esc(p.prazoProducao)}</small>` : ''}`;
 
-    $('#pdp-interest').textContent = p.disponibilidade === 'esgotada' ? 'Perguntar sobre uma nova produção' : `Tenho interesse nesta ${nomeTipo(p)}`;
+    $('#pdp-interest-label').textContent = p.disponibilidade === 'esgotada' ? 'Perguntar sobre uma nova produção' : `Tenho interesse nesta ${nomeTipo(p)}`;
 
     $('#pdp-specs').innerHTML = [
       specRow('Altura', p.altura),
@@ -569,8 +567,6 @@
 
     const wasSwipe = addSwipe($('#pdp-main'), (dir) => setPhoto(currentPhoto + dir));
     $('#pdp-main').addEventListener('click', () => { if (!wasSwipe()) openLightbox(currentPhoto); });
-    $('#pdp-interest').addEventListener('click', () => openContact(interestMessage()));
-    $('#pdp-mb-interest').addEventListener('click', () => openContact(interestMessage()));
 
     $('#pdp-copy-link').addEventListener('click', async () => {
       const ok = await copyText(productUrl(current.slug, corDoLink()));
@@ -645,29 +641,6 @@
       if (lbSwiped()) return; // deslize não fecha
       lb.close();
     });
-  }
-
-  /* ==========================================================
-     Contato pelo Instagram (mensagem pronta)
-     ========================================================== */
-  const contact = $('#contact');
-
-  function openContact(message) {
-    $('#contact-message').value = message;
-    $('#contact-open').href = igDirect();
-    contact.showModal();
-  }
-
-  function bindContact() {
-    // O link abre o Instagram; a mensagem é copiada no mesmo clique.
-    $('#contact-open').addEventListener('click', () => {
-      copyText($('#contact-message').value).then((ok) => toast(ok ? 'Mensagem copiada. Cole na conversa.' : 'Copie a mensagem manualmente.'));
-    });
-    $('#contact-copy').addEventListener('click', async () => {
-      const ok = await copyText($('#contact-message').value);
-      toast(ok ? 'Mensagem copiada' : 'Não foi possível copiar');
-    });
-    contact.addEventListener('click', (e) => { if (e.target === contact) contact.close(); });
   }
 
   /* ==========================================================
@@ -758,7 +731,6 @@
     bindHeader();
     bindReveal();
     bindLightbox();
-    bindContact();
     bindProduct();
     bindCatalog();
 

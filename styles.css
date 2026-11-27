@@ -108,7 +108,6 @@ dialog { color: inherit; }
 .btn-ghost:hover { border-color: var(--chocolate); background: var(--chocolate); color: var(--offwhite); }
 .btn-dark { background: var(--chocolate); color: var(--offwhite); }
 .btn-dark:hover { background: var(--chocolate-soft); }
-.btn-round { width: 50px; padding: 0; flex: none; }
 .btn-sm { min-height: 42px; padding: 0 18px; font-size: .72rem; letter-spacing: .12em; }
 .btn-block { width: 100%; }
 .btn:active { transform: translateY(1px); }
@@ -617,8 +616,6 @@ dialog::backdrop { background: rgba(62, 22, 8, .5); }
   .mb-name { font-family: var(--font-display); font-size: 1.15rem; color: var(--chocolate); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .mb-price { font-size: .9rem; color: var(--ink); }
   .pdp-mobilebar .btn { flex: none; min-height: 50px; padding: 0 20px; }
-  .pdp-mobilebar .btn-round { padding: 0; margin-left: auto; }
-  .pdp-mobilebar { gap: 10px; }
   .pdp-specs dl div { grid-template-columns: 1fr 1.3fr; }
 }
 .pdp-related h2 { font-size: clamp(1.9rem, 3.4vw, 2.6rem); font-weight: 400; margin-bottom: 28px; padding-top: 48px; border-top: 1px solid var(--line); }
@@ -639,21 +636,6 @@ dialog::backdrop { background: rgba(62, 22, 8, .5); }
 .lb-stage.is-zoomed img { transform: scale(2.2); cursor: zoom-out; }
 .lb-hint { grid-column: 1 / -1; grid-row: 3; margin: 0; font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; opacity: .7; }
 @media (max-width: 600px) { .lightbox[open] { grid-template-columns: 44px 1fr 44px; } }
-
-/* Contato */
-.contact { width: min(calc(100% - 32px), 540px); padding: 0; border: 0; border-radius: 6px; background: var(--offwhite); }
-.contact[open] { animation: pdp-in .4s var(--ease); }
-.contact::backdrop { background: rgba(62, 22, 8, .5); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
-.contact-inner { position: relative; padding: clamp(28px, 5vw, 44px); }
-.contact-close { position: absolute; top: 10px; right: 10px; }
-.contact h2 { font-size: 2rem; margin-bottom: .8rem; }
-.contact-help { font-size: .95rem; }
-.contact textarea { width: 100%; resize: vertical; border: 1px solid rgba(89, 31, 11, .25); border-radius: 3px; background: var(--white); padding: 14px; font-size: 1rem; line-height: 1.5; margin: 6px 0 18px; }
-.contact textarea:focus { outline: none; border-color: var(--chocolate); }
-.contact-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.contact-actions .btn { flex: 1 1 100%; letter-spacing: .1em; }
-@media (min-width: 560px) { .contact-actions .btn { flex: 1 1 auto; } }
-.contact-alt { font-size: .85rem; color: var(--ink-muted); margin: 18px 0 0; }
 
 /* Aviso rápido */
 .toast {
