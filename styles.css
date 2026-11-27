@@ -76,6 +76,8 @@ dialog { color: inherit; }
 :focus-visible { outline: 2px solid var(--coral-cta); outline-offset: 3px; }
 
 .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+/* Símbolo oficial do WhatsApp: preenchido, na cor do texto do botão */
+.icon-wa { width: 22px; height: 22px; fill: currentColor; stroke: none; flex: none; }
 .icon-lg { width: 46px; height: 46px; fill: none; stroke: currentColor; stroke-width: 1.15; stroke-linecap: round; stroke-linejoin: round; }
 
 .eyebrow {
@@ -517,7 +519,7 @@ dialog { color: inherit; }
 .footer-nav a:hover, .footer-info a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
 .footer-info p { opacity: .85; font-size: .98rem; }
 .footer-info strong { font-weight: 500; }
-.footer-ig { display: inline-flex; align-items: center; gap: 10px; margin-top: 6px; }
+.footer-ig { display: flex; align-items: center; gap: 10px; margin-top: 10px; width: fit-content; min-height: 32px; }
 .footer-bottom { position: relative; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 64px; padding-top: 24px; border-top: 1px solid rgba(250, 246, 240, .18); font-size: .82rem; opacity: .75; }
 .footer-bottom p { margin: 0; }
 .footer-bottom a { color: var(--offwhite); }

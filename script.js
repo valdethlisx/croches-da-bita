@@ -471,7 +471,7 @@
 
     const aviso = p.ficticio
       ? 'Produto demonstrativo: dados fictícios, que serão substituídos pelas informações reais.'
-      : p.provisorio ? 'Nome provisório. Preço, medidas e demais detalhes estão sendo confirmados; fale com a Bita pelo Instagram.' : '';
+      : p.provisorio ? 'Nome provisório. Preço, medidas e demais detalhes estão sendo confirmados; fale com a Bita pelo WhatsApp.' : '';
     $('#pdp-demo').textContent = aviso;
     $('#pdp-demo').hidden = !aviso;
 
@@ -659,6 +659,15 @@
       </li>`).join('');
 
     if (loja.encomendas) $('#footer-encomendas').textContent = loja.encomendas;
+    // WhatsApp no rodapé (número formatado para leitura)
+    const n = CONFIG.whatsapp;
+    const waFooter = $('#footer-wa');
+    if (n && waFooter) {
+      waFooter.href = `https://wa.me/${n}?text=${encodeURIComponent('Olá, Bita! Vi o catálogo e gostaria de mais informações.')}`;
+      const local = n.startsWith('55') ? n.slice(2) : n;
+      $('#footer-wa-num').textContent = local.length === 11 ? `(${local.slice(0, 2)}) ${local.slice(2, 7)}-${local.slice(7)}` : `+${n}`;
+      waFooter.hidden = false;
+    }
     const info = $('#footer-info');
     const ig = $('.footer-ig', info);
     if (loja.entrega) ig.insertAdjacentHTML('beforebegin', `<p><strong>Entrega:</strong> ${esc(loja.entrega)}</p>`);
@@ -669,7 +678,7 @@
       notice.innerHTML = '<strong>Catálogo de demonstração.</strong> Os produtos, preços e medidas exibidos são fictícios e serão substituídos pelas peças reais.';
       notice.hidden = false;
     } else if (state.produtos.some((p) => p.provisorio)) {
-      notice.innerHTML = '<strong>Catálogo em montagem.</strong> Nomes, preços e medidas ainda estão sendo confirmados. Para saber mais sobre uma peça, fale com a Bita pelo Instagram.';
+      notice.innerHTML = '<strong>Catálogo em montagem.</strong> Nomes, preços e medidas ainda estão sendo confirmados. Para saber mais sobre uma peça, toque em “Tenho interesse” e fale com a Bita pelo WhatsApp.';
       notice.hidden = false;
     } else {
       notice.hidden = true;
