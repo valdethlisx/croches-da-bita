@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+  <pattern id="kclutchperolab" width="28" height="22" patternUnits="userSpaceOnUse" patternTransform="scale(1)">
+    <rect width="28" height="22" fill="#A68660"/>
+    <ellipse cx="8.5" cy="11" rx="5.6" ry="10" transform="rotate(-27 8.5 11)" fill="#D3B38C" stroke="#A68660" stroke-width="1"/>
+    <ellipse cx="19.5" cy="11" rx="5.6" ry="10" transform="rotate(27 19.5 11)" fill="#D3B38C" stroke="#A68660" stroke-width="1"/>
+    <ellipse cx="8" cy="7" rx="1.6" ry="3.4" transform="rotate(-27 8 7)" fill="#fff" opacity=".18"/>
+    <ellipse cx="19" cy="7" rx="1.6" ry="3.4" transform="rotate(27 19 7)" fill="#fff" opacity=".18"/>
+  </pattern>
+  <radialGradient id="hlclutchperolab" cx=".38" cy=".3" r=".75">
+    <stop offset="0" stop-color="#fff" stop-opacity=".26"/>
+    <stop offset=".55" stop-color="#fff" stop-opacity="0"/>
+    <stop offset="1" stop-color="#000" stop-opacity=".28"/>
+  </radialGradient>
+  <filter id="softclutchperolab" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter></defs>
+  <rect width="800" height="1000" fill="#F6EEE4"/>
+  <path d="M170 900 V420 A230 230 0 0 1 630 420 V900 Z" fill="#EADBC6"/>
+  <path d="M60 210 C 220 120, 300 300, 470 200 S 700 120, 760 230" stroke="#591F0B" stroke-width="1.6" fill="none" opacity=".35"/>
+  <g transform="translate(400 600) rotate(-5) scale(.86) translate(-400 -600)">
+  <ellipse cx="400" cy="750" rx="250" ry="20" fill="#000" opacity=".2" filter="url(#softclutchperolab)"/>
+  
+  
+  <path d="M204 480 H596 Q620 480 620 504 V716 Q620 740 596 740 H204 Q180 740 180 716 V504 Q180 480 204 480 Z" fill="url(#kclutchperolab)"/>
+  <path d="M204 480 H596 Q620 480 620 504 V716 Q620 740 596 740 H204 Q180 740 180 716 V504 Q180 480 204 480 Z" fill="url(#hlclutchperolab)"/>
+  <path d="M204 480 H596 Q620 480 620 504 V716 Q620 740 596 740 H204 Q180 740 180 716 V504 Q180 480 204 480 Z" fill="none" stroke="#A68660" stroke-width="3"/>
+  <path d="M180 500 Q180 480 204 480 H596 Q620 480 620 500 L408 648 Q400 654 392 648 Z" fill="#000" opacity=".16"/><path d="M182 500 L400 652 L618 500" stroke="#A68660" stroke-width="3" fill="none"/><circle cx="400" cy="642" r="17" fill="#D9B676" stroke="#9C7A3C" stroke-width="3"/><circle cx="395" cy="637" r="5" fill="#fff" opacity=".55"/>
+  </g>
+  <text x="40" y="968" font-family="Helvetica, Arial, sans-serif" font-size="17" letter-spacing="3" fill="#591F0B" opacity=".55">IMAGEM ILUSTRATIVA</text>
+</svg>

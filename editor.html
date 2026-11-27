@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Editor de produtos · Crochês da Bita</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* Editor local: ferramenta interna, não aparece no menu do site. */
+    :root { --chocolate:#591F0B; --coral:#DB3236; --peach:#FFE9E0; --off:#FAF6F0; --line:rgba(89,31,11,.18); --ink:#3E2A22; --muted:#7A645A; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--off); color: var(--ink); font: 300 16px/1.55 "Jost", system-ui, sans-serif; }
+    h1, h2, h3 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 500; color: var(--chocolate); margin: 0; line-height: 1.1; }
+    button, input, select, textarea { font: inherit; color: inherit; font-size: 16px; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 20px 16px 120px; }
+    header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    header img { height: 56px; }
+    header h1 { font-size: 1.9rem; }
+    .warn { background: var(--peach); border-left: 3px solid var(--coral); padding: 12px 16px; margin-bottom: 20px; font-size: .95rem; }
+    .warn strong { font-weight: 500; color: var(--chocolate); }
+    .bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(89,31,11,.35); background: transparent; color: var(--chocolate); font-size: .78rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; text-decoration: none; }
+    .btn:hover { border-color: var(--chocolate); }
+    .btn-primary { background: var(--coral); border-color: var(--coral); color: #fff; }
+    .btn-primary:hover { background: var(--chocolate); border-color: var(--chocolate); }
+    .btn-danger { color: #A52A2A; border-color: rgba(165,42,42,.4); }
+    .layout { display: grid; gap: 24px; }
+    @media (min-width: 900px) { .layout { grid-template-columns: 320px 1fr; align-items: start; } .list-panel { position: sticky; top: 16px; } }
+    .panel { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 18px; }
+    .panel h2 { font-size: 1.5rem; margin-bottom: 12px; }
+    .plist { list-style: none; margin: 0; padding: 0; }
+    .plist li { display: flex; align-items: center; gap: 10px; padding: 10px 6px; border-top: 1px solid var(--line); cursor: pointer; border-radius: 4px; }
+    .plist li:hover, .plist li.active { background: var(--peach); }
+    .plist img { width: 44px; height: 55px; object-fit: cover; border-radius: 3px; background: var(--peach); flex: none; }
+    .plist .n { font-weight: 400; color: var(--chocolate); }
+    .plist small { display: block; color: var(--muted); font-size: .8rem; }
+    fieldset { border: 0; padding: 0; margin: 0 0 22px; }
+    legend { font-family: "Cormorant Garamond", serif; font-size: 1.35rem; color: var(--chocolate); padding: 0; margin-bottom: 10px; }
+    .grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+    @media (min-width: 600px) { .grid.two { grid-template-columns: 1fr 1fr; } .grid.three { grid-template-columns: 1fr 1fr 1fr; } }
+    label.f { display: flex; flex-direction: column; gap: 4px; font-size: .74rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--chocolate); }
+    label.f input, label.f select, label.f textarea { border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; background: var(--off); text-transform: none; letter-spacing: 0; font-weight: 300; color: var(--ink); }
+    label.f textarea { min-height: 96px; resize: vertical; }
+    .hint { font-size: .8rem; color: var(--muted); text-transform: none; letter-spacing: 0; font-weight: 300; }
+    .checks { display: flex; flex-wrap: wrap; gap: 10px 20px; }
+    .checks label { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; }
+    .checks input { width: 20px; height: 20px; accent-color: var(--chocolate); }
+    .rows .row { display: grid; grid-template-columns: 1fr 52px 44px; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .rows.fotos .row { grid-template-columns: 56px 1fr 44px; }
+    .rows.fotos .row .inputs { display: grid; gap: 6px; }
+    .rows input[type=text] { border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; background: var(--off); width: 100%; min-width: 0; }
+    .rows input[type=color] { width: 52px; height: 44px; border: 1px solid var(--line); border-radius: 4px; padding: 2px; background: #fff; }
+    .rows img { width: 56px; height: 70px; object-fit: cover; border-radius: 3px; background: var(--peach); }
+    .x { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: #fff; cursor: pointer; color: #A52A2A; font-size: 1.2rem; }
+    .actions { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(250,246,240,.96); border-top: 1px solid var(--line); padding: 12px 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; z-index: 5; }
+    .error { color: #A52A2A; font-size: .9rem; margin: 8px 0 0; }
+    .toast { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%); background: var(--chocolate); color: var(--off); padding: 10px 18px; border-radius: 16px; width: max-content; max-width: calc(100% - 32px); text-align: center; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 10; }
+    .toast.show { opacity: 1; }
+    details { margin-top: 24px; }
+    summary { cursor: pointer; font-family: "Cormorant Garamond", serif; font-size: 1.4rem; color: var(--chocolate); min-height: 44px; display: flex; align-items: center; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="assets/brand/logo-marrom.png" alt="Crochês da Bita">
+    <h1>Editor de produtos</h1>
+  </header>
+
+  <p class="warn"><strong>Importante:</strong> este editor não altera o site sozinho. Depois de editar, toque em <strong>Baixar products.json</strong>, substitua o arquivo antigo pelo novo e publique o site de novo. Só então as mudanças aparecem no catálogo público. Enquanto isso, seu rascunho fica guardado só neste navegador.</p>
+
+  <div class="bar">
+    <button class="btn" type="button" id="b-load">Recarregar do site</button>
+    <label class="btn" for="f-import">Importar arquivo .json</label>
+    <input class="visually-hidden" type="file" id="f-import" accept="application/json,.json">
+    <a class="btn" href="index.html" target="_blank" rel="noopener">Abrir o catálogo</a>
+  </div>
+
+  <div class="layout">
+    <section class="panel list-panel" aria-labelledby="t-lista">
+      <h2 id="t-lista">Bolsas (<span id="count">0</span>)</h2>
+      <ul class="plist" id="plist"></ul>
+      <div class="bar" style="margin:14px 0 0">
+        <button class="btn btn-primary" type="button" id="b-new">+ Nova bolsa</button>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="t-form">
+      <h2 id="t-form">Editar bolsa</h2>
+      <form id="pform" novalidate>
+        <fieldset>
+          <legend>Identificação</legend>
+          <div class="grid two">
+            <label class="f">Nome<input name="nome" required placeholder="Ex.: Bolsa Aurora"></label>
+            <label class="f">Código de referência<input name="id" required placeholder="Ex.: CB-007"></label>
+            <label class="f">Slug (endereço do link)<input name="slug" required placeholder="bolsa-aurora"><span class="hint">Gerado a partir do nome. Use só letras minúsculas, números e hífens.</span></label>
+            <label class="f">Data de inclusão<input name="dataInclusao" type="date"></label>
+            <label class="f">Modelo<input name="modelo" list="dl-modelos" placeholder="Ex.: Baguete"></label>
+            <label class="f">Tipo de bolsa (categoria)<input name="categoria" list="dl-categorias" placeholder="Ex.: Bolsa de ombro"></label>
+          </div>
+          <datalist id="dl-modelos"></datalist>
+          <datalist id="dl-categorias"></datalist>
+        </fieldset>
+
+        <fieldset>
+          <legend>Preço e disponibilidade</legend>
+          <div class="grid two">
+            <label class="f">Preço (R$)<input name="preco" type="number" inputmode="decimal" min="0" step="0.01" placeholder="189.90"></label>
+            <label class="f">Disponibilidade
+              <select name="disponibilidade">
+                <option value="pronta-entrega">Pronta entrega</option>
+                <option value="sob-encomenda">Sob encomenda</option>
+                <option value="esgotada">Esgotada</option>
+              </select>
+            </label>
+            <label class="f">Prazo de produção<input name="prazoProducao" placeholder="Só para sob encomenda. Ex.: 15 dias úteis"></label>
+          </div>
+          <div class="checks" style="margin-top:12px">
+            <label><input type="checkbox" name="novidade"> Novidade</label>
+            <label><input type="checkbox" name="exclusiva"> Peça exclusiva</label>
+            <label><input type="checkbox" name="destaque"> Destaque</label>
+            <label><input type="checkbox" name="ficticio"> Dados fictícios (demonstração)</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Descrição</legend>
+          <label class="f">Texto da bolsa<textarea name="descricao" placeholder="Conte como é a bolsa, para que ocasiões combina…"></textarea></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Medidas</legend>
+          <div class="grid two">
+            <label class="f">Altura<input name="altura" placeholder="Ex.: 16 cm"></label>
+            <label class="f">Largura<input name="largura" placeholder="Ex.: 30 cm"></label>
+            <label class="f">Profundidade<input name="profundidade" placeholder="Ex.: 7 cm"></label>
+            <label class="f">Comprimento da alça<input name="comprimentoAlca" placeholder="Ex.: 60 cm"></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Materiais e acabamentos</legend>
+          <div class="grid two">
+            <label class="f">Material<input name="material" placeholder="Ex.: Fio de malha"></label>
+            <label class="f">Composição do fio<input name="composicao" placeholder="Conforme a etiqueta do fio"></label>
+            <label class="f">Fechamento<input name="fechamento" placeholder="Ex.: Zíper"></label>
+            <label class="f">Forro<input name="forro" placeholder="Ex.: Forrada em algodão"></label>
+            <label class="f">Ferragens e acabamentos<input name="ferragens" placeholder="Ex.: Argolas douradas"></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Cores disponíveis</legend>
+          <div class="rows" id="rows-cores"></div>
+          <button class="btn" type="button" id="b-add-cor">+ Adicionar cor</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>Fotografias</legend>
+          <p class="hint">Coloque as fotos na pasta <code>assets/img/produtos/</code> e escreva o caminho, por exemplo <code>assets/img/produtos/bolsa-aurora-1.jpg</code>. A primeira foto é a principal. A descrição ajuda quem usa leitor de tela.</p>
+          <div class="rows fotos" id="rows-fotos"></div>
+          <button class="btn" type="button" id="b-add-foto">+ Adicionar foto</button>
+        </fieldset>
+
+        <p class="error" id="err" role="alert"></p>
+        <div class="bar">
+          <button class="btn btn-primary" type="submit">Salvar esta bolsa</button>
+          <button class="btn" type="button" id="b-dup">Duplicar</button>
+          <button class="btn btn-danger" type="button" id="b-del">Remover</button>
+        </div>
+      </form>
+
+      <details>
+        <summary>Informações da loja e galeria do Instagram</summary>
+        <form id="lform" novalidate>
+          <div class="grid">
+            <label class="f">Usuário do Instagram<input name="instagram" placeholder="crochesdabita"></label>
+            <label class="f">Texto sobre encomendas (rodapé)<input name="encomendas"></label>
+            <label class="f">Entrega<input name="entrega" placeholder="Deixe vazio para não exibir"></label>
+            <label class="f">Pagamento<input name="pagamento" placeholder="Deixe vazio para não exibir"></label>
+          </div>
+          <p class="hint" style="margin-top:16px">Galeria do Instagram (6 fotos): caminho da imagem, legenda e, se quiser, o link da publicação.</p>
+          <div id="rows-insta"></div>
+          <div class="bar"><button class="btn btn-primary" type="submit">Salvar informações da loja</button></div>
+        </form>
+      </details>
+    </section>
+  </div>
+</div>
+
+<div class="actions">
+  <button class="btn btn-primary" type="button" id="b-export">Baixar products.json</button>
+  <button class="btn" type="button" id="b-copy">Copiar JSON</button>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+  'use strict';
+  const DRAFT = 'cdb-editor-rascunho';
+  const $ = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const slugify = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+  const TEXT = ['id', 'slug', 'nome', 'modelo', 'categoria', 'descricao', 'altura', 'largura', 'profundidade', 'comprimentoAlca', 'material', 'composicao', 'fechamento', 'forro', 'ferragens', 'disponibilidade', 'prazoProducao', 'dataInclusao'];
+  const BOOL = ['exclusiva', 'novidade', 'destaque', 'ficticio'];
+  const DISP = { 'pronta-entrega': 'Pronta entrega', 'sob-encomenda': 'Sob encomenda', 'esgotada': 'Esgotada' };
+
+  let data = { produtos: [], loja: {} };
+  let sel = -1; // índice da bolsa em edição (-1 = nova)
+  let slugTouched = false;
+
+  function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2400); }
+  function saveDraft() { try { localStorage.setItem(DRAFT, JSON.stringify(data)); } catch { /* armazenamento indisponível */ } }
+
+  async function loadFromSite() {
+    try {
+      const r = await fetch('products.json', { cache: 'no-cache' });
+      if (!r.ok) throw new Error(r.status);
+      setData(await r.json());
+      toast('Produtos carregados do site');
+    } catch {
+      toast('Não foi possível ler products.json. Use “Importar arquivo”.');
+    }
+  }
+
+  function setData(d) {
+    data = { ...d, produtos: Array.isArray(d.produtos) ? d.produtos : [], loja: d.loja || {} };
+    saveDraft();
+    renderList();
+    fillLoja();
+    edit(data.produtos.length ? 0 : -1);
+  }
+
+  /* ---- Lista ---- */
+  function renderList() {
+    $('#count').textContent = data.produtos.length;
+    $('#plist').innerHTML = data.produtos.map((p, i) => `
+      <li data-i="${i}" class="${i === sel ? 'active' : ''}" tabindex="0" role="button" aria-label="Editar ${esc(p.nome)}">
+        <img src="${esc(p.fotos?.[0]?.src || '')}" alt="">
+        <div><span class="n">${esc(p.nome)}</span><small>${p.preco != null ? brl.format(p.preco) : ''} · ${esc(DISP[p.disponibilidade] || '')}${p.ficticio ? ' · fictício' : ''}</small></div>
+      </li>`).join('');
+    const uniq = (k) => [...new Set(data.produtos.map((p) => p[k]).filter(Boolean))];
+    $('#dl-modelos').innerHTML = uniq('modelo').map((v) => `<option value="${esc(v)}">`).join('');
+    $('#dl-categorias').innerHTML = uniq('categoria').map((v) => `<option value="${esc(v)}">`).join('');
+  }
+
+  /* ---- Formulário da bolsa ---- */
+  function corRow(c = { nome: '', hex: '#D3B38C' }) {
+    return `<div class="row"><input type="text" placeholder="Nome da cor" value="${esc(c.nome)}" data-k="nome" aria-label="Nome da cor"><input type="color" value="${esc(c.hex || '#D3B38C')}" data-k="hex" aria-label="Tom da cor"><button type="button" class="x" aria-label="Remover cor">×</button></div>`;
+  }
+  function fotoRow(f = { src: '', alt: '' }) {
+    return `<div class="row"><img src="${esc(f.src)}" alt=""><div class="inputs"><input type="text" placeholder="assets/img/produtos/nome-1.jpg" value="${esc(f.src)}" data-k="src" aria-label="Caminho da foto"><input type="text" placeholder="Descrição da foto" value="${esc(f.alt)}" data-k="alt" aria-label="Descrição da foto"></div><button type="button" class="x" aria-label="Remover foto">×</button></div>`;
+  }
+
+  function edit(i) {
+    sel = i;
+    const p = i >= 0 ? data.produtos[i] : { disponibilidade: 'pronta-entrega', material: 'Fio de malha', dataInclusao: new Date().toISOString().slice(0, 10), cores: [], fotos: [] };
+    const f = $('#pform');
+    TEXT.forEach((k) => { if (f.elements[k]) f.elements[k].value = p[k] ?? ''; });
+    f.elements.preco.value = p.preco ?? '';
+    BOOL.forEach((k) => { f.elements[k].checked = !!p[k]; });
+    $('#rows-cores').innerHTML = (p.cores || []).map(corRow).join('');
+    $('#rows-fotos').innerHTML = (p.fotos || []).map(fotoRow).join('');
+    slugTouched = i >= 0;
+    $('#t-form').textContent = i >= 0 ? `Editar: ${p.nome}` : 'Nova bolsa';
+    $('#b-del').hidden = $('#b-dup').hidden = i < 0;
+    $('#err').textContent = '';
+    renderList();
+  }
+
+  function readForm() {
+    const f = $('#pform');
+    const p = {};
+    TEXT.forEach((k) => { p[k] = f.elements[k].value.trim(); });
+    p.preco = f.elements.preco.value === '' ? null : Math.round(Number(f.elements.preco.value) * 100) / 100;
+    BOOL.forEach((k) => { p[k] = f.elements[k].checked; });
+    p.cores = $$('#rows-cores .row').map((r) => ({ nome: $('[data-k=nome]', r).value.trim(), hex: $('[data-k=hex]', r).value })).filter((c) => c.nome);
+    p.fotos = $$('#rows-fotos .row').map((r) => ({ src: $('[data-k=src]', r).value.trim(), alt: $('[data-k=alt]', r).value.trim() })).filter((x) => x.src);
+    return p;
+  }
+
+  function validate(p) {
+    if (!p.nome) return 'Preencha o nome da bolsa.';
+    if (!p.id) return 'Preencha o código de referência.';
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(p.slug)) return 'O slug deve ter só letras minúsculas, números e hífens.';
+    if (p.preco == null || !(p.preco >= 0)) return 'Informe o preço em reais (ex.: 189.90).';
+    const dupSlug = data.produtos.findIndex((x, i) => i !== sel && x.slug === p.slug);
+    if (dupSlug >= 0) return `Já existe uma bolsa com o slug “${p.slug}”.`;
+    const dupId = data.produtos.findIndex((x, i) => i !== sel && x.id === p.id);
+    if (dupId >= 0) return `Já existe uma bolsa com o código “${p.id}”.`;
+    if (!p.fotos.length) return 'Adicione pelo menos uma foto.';
+    return '';
+  }
+
+  /* ---- Loja ---- */
+  function fillLoja() {
+    const l = data.loja || {};
+    const f = $('#lform');
+    ['instagram', 'encomendas', 'entrega', 'pagamento'].forEach((k) => { f.elements[k].value = l[k] || ''; });
+    const g = Array.from({ length: 6 }, (_, i) => (l.galeriaInstagram || [])[i] || {});
+    $('#rows-insta').innerHTML = g.map((x, i) => `
+      <div class="grid three" style="margin-bottom:10px">
+        <label class="f">Foto ${i + 1}<input data-k="imagem" value="${esc(x.imagem)}" placeholder="assets/img/site/insta-${i + 1}.jpg"></label>
+        <label class="f">Legenda<input data-k="legenda" value="${esc(x.legenda)}"></label>
+        <label class="f">Link (opcional)<input data-k="link" value="${esc(x.link)}" placeholder="https://www.instagram.com/p/…"></label>
+      </div>`).join('');
+  }
+
+  /* ---- Exportação ---- */
+  function json() {
+    const out = { ...data };
+    return JSON.stringify(out, null, 2) + '\n';
+  }
+
+  /* ---- Eventos ---- */
+  $('#plist').addEventListener('click', (e) => { const li = e.target.closest('li[data-i]'); if (li) edit(Number(li.dataset.i)); });
+  $('#plist').addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.dataset.i) { e.preventDefault(); edit(Number(e.target.dataset.i)); } });
+  $('#b-new').addEventListener('click', () => { edit(-1); $('#pform').elements.nome.focus(); });
+  $('#pform').elements.nome.addEventListener('input', (e) => { if (!slugTouched) $('#pform').elements.slug.value = slugify(e.target.value); });
+  $('#pform').elements.slug.addEventListener('input', () => { slugTouched = true; });
+  $('#b-add-cor').addEventListener('click', () => $('#rows-cores').insertAdjacentHTML('beforeend', corRow()));
+  $('#b-add-foto').addEventListener('click', () => $('#rows-fotos').insertAdjacentHTML('beforeend', fotoRow()));
+  document.addEventListener('click', (e) => { if (e.target.classList.contains('x')) e.target.closest('.row').remove(); });
+  $('#rows-fotos').addEventListener('change', (e) => { if (e.target.dataset.k === 'src') e.target.closest('.row').querySelector('img').src = e.target.value; });
+
+  $('#pform').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const p = readForm();
+    const err = validate(p);
+    $('#err').textContent = err;
+    if (err) return;
+    if (sel >= 0) data.produtos[sel] = { ...data.produtos[sel], ...p };
+    else { data.produtos.push(p); sel = data.produtos.length - 1; }
+    saveDraft();
+    edit(sel);
+    toast('Bolsa salva no rascunho. Lembre de baixar o products.json.');
+  });
+
+  $('#b-dup').addEventListener('click', () => {
+    if (sel < 0) return;
+    const c = JSON.parse(JSON.stringify(data.produtos[sel]));
+    c.nome += ' (cópia)'; c.slug += '-copia'; c.id += '-C';
+    data.produtos.push(c);
+    saveDraft();
+    edit(data.produtos.length - 1);
+  });
+
+  $('#b-del').addEventListener('click', () => {
+    if (sel < 0) return;
+    if (!confirm(`Remover “${data.produtos[sel].nome}” do rascunho?`)) return;
+    data.produtos.splice(sel, 1);
+    saveDraft();
+    edit(data.produtos.length ? 0 : -1);
+    toast('Bolsa removida do rascunho');
+  });
+
+  $('#lform').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const l = { ...(data.loja || {}) };
+    ['instagram', 'encomendas', 'entrega', 'pagamento'].forEach((k) => { l[k] = f.elements[k].value.trim(); });
+    l.instagram = l.instagram.replace(/^@/, '');
+    l.galeriaInstagram = $$('#rows-insta .grid').map((r) => {
+      const o = { imagem: $('[data-k=imagem]', r).value.trim(), legenda: $('[data-k=legenda]', r).value.trim() };
+      const link = $('[data-k=link]', r).value.trim();
+      if (link) o.link = link;
+      return o;
+    });
+    data.loja = l;
+    saveDraft();
+    toast('Informações da loja salvas no rascunho');
+  });
+
+  $('#b-export').addEventListener('click', () => {
+    const blob = new Blob([json()], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'products.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    toast('products.json baixado. Agora substitua e publique.');
+  });
+  $('#b-copy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(json()); toast('JSON copiado'); } catch { toast('Não foi possível copiar'); }
+  });
+  $('#b-load').addEventListener('click', () => { if (confirm('Descartar o rascunho e recarregar os produtos publicados?')) loadFromSite(); });
+  $('#f-import').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try { setData(JSON.parse(await file.text())); toast('Arquivo importado'); } catch { toast('Arquivo inválido'); }
+    e.target.value = '';
+  });
+
+  // Início: usa o rascunho salvo, se houver; senão lê o products.json do site.
+  let draft = null;
+  try { draft = JSON.parse(localStorage.getItem(DRAFT) || 'null'); } catch { draft = null; }
+  if (draft && Array.isArray(draft.produtos)) { setData(draft); toast('Rascunho anterior carregado'); }
+  else loadFromSite();
+})();
+</script>
+</body>
+</html>
