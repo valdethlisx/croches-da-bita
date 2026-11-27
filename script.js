@@ -372,17 +372,112 @@
 
   function renderGallery() {
     const fotos = currentFotos;
+    const g = current ? giroPara(current, currentColor) : null;
     $('#pdp-thumbs').innerHTML = fotos.map((f, i) => `
       <button type="button" data-i="${i}" aria-label="Ver foto ${i + 1} de ${fotos.length}" aria-pressed="false">
         <img src="${esc(f.src)}" alt="" width="160" height="200" loading="lazy" decoding="async">
-      </button>`).join('');
-    $('#pdp-thumbs').hidden = fotos.length < 2;
+      </button>`).join('') + (g ? `
+      <button type="button" class="thumb-giro" data-giro="1" aria-label="Ver a peça girando em 360 graus" aria-pressed="false">
+        ${icon('i-giro')}<span>360°</span>
+      </button>` : '');
+    $('#pdp-thumbs').hidden = fotos.length + (g ? 1 : 0) < 2;
     $('#pdp-swipe-hint').hidden = fotos.length < 2;
+    fecharGiro();
     setPhoto(0);
+  }
+
+  /* ---------- Giro 360° (sequência de fotos reais da peça girando) ---------- */
+  const giro = { ativo: false, urls: [], imgs: [], i: 0, auto: null };
+  const giroEl = $('#pdp-giro');
+  const giroImg = $('#pdp-giro-img');
+
+  /** Configuração do giro para a cor escolhida: { cor?, pasta, quadros, extensao? } */
+  function giroPara(p, cor) {
+    return (p.giro360 || []).find((g) => g && g.pasta && g.quadros > 1 && (!g.cor || g.cor === cor)) || null;
+  }
+
+  function quadroGiro(i) {
+    const n = giro.urls.length;
+    if (!n) return;
+    giro.i = ((i % n) + n) % n;
+    // Mostra o quadro pedido ou, enquanto ele carrega, o carregado mais próximo
+    let k = giro.i;
+    for (let d = 0; d < n && !(giro.imgs[k] && giro.imgs[k].complete && giro.imgs[k].naturalWidth); d++) k = (giro.i - d - 1 + n) % n;
+    if (giro.imgs[k]?.naturalWidth) giroImg.src = giro.urls[k];
+  }
+
+  function abrirGiro(cfg) {
+    if (!cfg) return;
+    const pasta = cfg.pasta.replace(/\/?$/, '/');
+    const ext = cfg.extensao || 'jpg';
+    giro.urls = Array.from({ length: cfg.quadros }, (_, k) => `${pasta}${String(k + 1).padStart(2, '0')}.${ext}`);
+    giro.imgs = new Array(cfg.quadros).fill(null);
+    giro.ativo = true;
+    giroEl.hidden = false;
+    giroEl.classList.remove('is-tocado');
+    giroImg.alt = `${current.nome} girando em 360 graus`;
+    $$('#pdp-thumbs button').forEach((b) => b.setAttribute('aria-pressed', String(!!b.dataset.giro)));
+    const carga = $('#pdp-giro-carga');
+    let prontos = 0;
+    // Carrega primeiro um quadro a cada 4 (o giro já funciona "picado") e depois completa
+    const ordem = [...giro.urls.keys()].sort((a, b) => (a % 4) - (b % 4) || a - b);
+    ordem.forEach((k) => {
+      const im = new Image();
+      im.decoding = 'async';
+      im.onload = im.onerror = () => {
+        prontos++;
+        carga.textContent = prontos < giro.urls.length ? `Carregando ${Math.round((prontos / giro.urls.length) * 100)}%` : '';
+        if (k === 0 || giroImg.getAttribute('src') == null) quadroGiro(giro.i);
+      };
+      im.src = giro.urls[k];
+      giro.imgs[k] = im;
+    });
+    carga.textContent = 'Carregando…';
+    // Dá uma volta sozinho para mostrar que gira (exceto para quem prefere menos movimento)
+    clearInterval(giro.auto);
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let passos = 0;
+      giro.auto = setInterval(() => {
+        quadroGiro(giro.i + 1);
+        if (++passos >= giro.urls.length) clearInterval(giro.auto);
+      }, 110);
+    }
+  }
+
+  function fecharGiro() {
+    if (!giro.ativo) return;
+    giro.ativo = false;
+    clearInterval(giro.auto);
+    giroEl.hidden = true;
+    giroImg.removeAttribute('src');
+  }
+
+  function bindGiro() {
+    let x0 = null, i0 = 0;
+    const parar = () => { clearInterval(giro.auto); giroEl.classList.add('is-tocado'); };
+    giroEl.addEventListener('pointerdown', (e) => {
+      x0 = e.clientX; i0 = giro.i; parar();
+      giroEl.setPointerCapture(e.pointerId);
+      giroEl.classList.add('is-arrastando');
+    });
+    giroEl.addEventListener('pointermove', (e) => {
+      if (x0 === null) return;
+      // Arrastar a largura inteira da foto = uma volta completa
+      const passo = giroEl.clientWidth / giro.urls.length;
+      quadroGiro(i0 - Math.round((e.clientX - x0) / passo));
+    });
+    const soltar = () => { x0 = null; giroEl.classList.remove('is-arrastando'); };
+    giroEl.addEventListener('pointerup', soltar);
+    giroEl.addEventListener('pointercancel', soltar);
+    giroEl.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { parar(); quadroGiro(giro.i + 1); e.preventDefault(); }
+      if (e.key === 'ArrowLeft') { parar(); quadroGiro(giro.i - 1); e.preventDefault(); }
+    });
   }
 
   function setPhoto(i) {
     const fotos = currentFotos;
+    fecharGiro();
     if (!fotos.length) return;
     currentPhoto = (i + fotos.length) % fotos.length;
     const f = fotos[currentPhoto];
@@ -531,6 +626,7 @@
   }
 
   function hidePdp() {
+    fecharGiro();
     if (pdp.open) pdp.close();
     document.documentElement.style.overflow = '';
     document.title = baseTitle;
@@ -559,6 +655,7 @@
     $('#pdp-thumbs').addEventListener('click', (e) => {
       const b = e.target.closest('button[data-i]');
       if (b) setPhoto(Number(b.dataset.i));
+      if (e.target.closest('button[data-giro]')) abrirGiro(giroPara(current, currentColor));
     });
     $('#pdp-swatches').addEventListener('click', (e) => {
       const b = e.target.closest('button[data-cor]');
@@ -747,6 +844,7 @@
     bindHeader();
     bindReveal();
     bindLightbox();
+    bindGiro();
     bindProduct();
     bindCatalog();
 

@@ -565,6 +565,35 @@ dialog::backdrop { background: rgba(62, 22, 8, .5); }
 .pdp-thumbs button:hover { opacity: 1; }
 .pdp-thumbs button[aria-pressed="true"] { opacity: 1; border-color: var(--chocolate); }
 
+/* Giro 360°: fica sobre a foto principal */
+.pdp-gallery { position: relative; }
+.pdp-giro {
+  position: absolute; top: 0; left: 0; right: 0; aspect-ratio: 4 / 5; z-index: 2;
+  background: var(--peach-soft); border-radius: var(--radius); overflow: hidden;
+  cursor: grab; touch-action: pan-y; -webkit-user-select: none; user-select: none;
+}
+.pdp-giro.is-arrastando { cursor: grabbing; }
+.pdp-giro img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.giro-dica {
+  position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px;
+  background: rgba(250, 246, 240, .92); color: var(--chocolate); white-space: nowrap;
+  font-size: .68rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+  transition: opacity .5s var(--ease); pointer-events: none;
+}
+.giro-dica .icon { width: 18px; height: 18px; }
+.pdp-giro.is-tocado .giro-dica { opacity: 0; }
+.giro-carga { position: absolute; top: 14px; right: 14px; padding: 6px 11px; border-radius: 999px; background: rgba(250, 246, 240, .9); color: var(--chocolate); font-size: .7rem; letter-spacing: .1em; }
+.giro-carga:empty { display: none; }
+.pdp-thumbs .thumb-giro {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  background: var(--offwhite); border: 1px solid var(--line); color: var(--chocolate); opacity: 1;
+  font-size: .68rem; font-weight: 500; letter-spacing: .12em;
+}
+.pdp-thumbs .thumb-giro .icon { width: 22px; height: 22px; }
+.pdp-thumbs .thumb-giro[aria-pressed="true"] { border-color: var(--chocolate); background: var(--peach-soft); }
+@media (max-width: 959px) { .pdp-giro { border-radius: 0; } }
+
 .pdp-meta { font-size: .7rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 14px; }
 .pdp-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
 .pdp-tags:empty { display: none; }

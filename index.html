@@ -23,9 +23,9 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <!-- Favicon: monograma B -->
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png?v=20261127-3">
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/brand/favicon-192.png?v=20261127-3">
-  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png?v=20261127-3">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png?v=20261127-4">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/brand/favicon-192.png?v=20261127-4">
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png?v=20261127-4">
 
   <!-- Tipografia: Cormorant Garamond (títulos) + Jost (textos) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,7 +33,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 
   <link rel="preload" href="assets/img/site/hero.jpg" as="image">
-  <link rel="stylesheet" href="styles.css?v=20261127-3">
+  <link rel="stylesheet" href="styles.css?v=20261127-4">
 </head>
 <body>
 
@@ -58,6 +58,7 @@
     <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 3.5v11M7.5 8L12 3.5 16.5 8"/><path d="M5 12.5v6.5a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-6.5"/></symbol>
     <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="1.6"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></symbol>
     <symbol id="i-zoom" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4l5.1 5.1M10.5 7.8v5.4M7.8 10.5h5.4"/></symbol>
+    <symbol id="i-giro" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-14.5 4.6"/><path d="M4 12a8 8 0 0 1 14.5-4.6"/><path d="M18.5 3.5v4h-4M5.5 20.5v-4h4"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
 
     <!-- Cuidados (símbolos de conservação têxtil) -->
@@ -84,7 +85,7 @@
 <header class="site-header" id="topo">
   <div class="container header-inner">
     <a class="brand" href="#inicio" aria-label="Crochês da Bita · início">
-      <img src="assets/brand/monograma-marrom.png?v=20261127-3" alt="Crochês da Bita" width="760" height="776">
+      <img src="assets/brand/monograma-marrom.png?v=20261127-4" alt="Crochês da Bita" width="760" height="776">
     </a>
 
     <nav class="main-nav" id="menu" aria-label="Navegação principal">
@@ -372,7 +373,7 @@
     <button type="button" class="pdp-back" data-close-pdp>
       <svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg> <span>Voltar ao catálogo</span>
     </button>
-    <img class="pdp-bar-logo" src="assets/brand/monograma-marrom.png?v=20261127-3" alt="" width="760" height="776">
+    <img class="pdp-bar-logo" src="assets/brand/monograma-marrom.png?v=20261127-4" alt="" width="760" height="776">
     <button type="button" class="icon-btn" data-close-pdp aria-label="Fechar detalhes da bolsa">
       <svg class="icon"><use href="#i-close"/></svg>
     </button>
@@ -385,6 +386,12 @@
           <span class="photo-count" id="pdp-count" aria-hidden="true"></span>
           <span class="zoom-hint"><svg class="icon" aria-hidden="true"><use href="#i-zoom"/></svg> Ampliar</span>
         </button>
+        <!-- Giro 360°: fotos reais da peça girando (aparece só nas peças com "giro360" no products.json) -->
+        <div class="pdp-giro" id="pdp-giro" hidden tabindex="0" role="img" aria-roledescription="giro 360 graus" aria-label="Peça girando em 360 graus. Arraste para os lados ou use as setas para girar.">
+          <img id="pdp-giro-img" alt="" draggable="false">
+          <span class="giro-dica"><svg class="icon" aria-hidden="true"><use href="#i-giro"/></svg> Arraste para girar</span>
+          <span class="giro-carga" id="pdp-giro-carga" aria-live="polite"></span>
+        </div>
         <p class="swipe-hint" id="pdp-swipe-hint">Deslize para ver mais fotos</p>
         <div class="pdp-thumbs" id="pdp-thumbs" role="group" aria-label="Fotos da bolsa"></div>
       </div>
@@ -457,6 +464,6 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="script.js?v=20261127-3" defer></script>
+<script src="script.js?v=20261127-4" defer></script>
 </body>
 </html>

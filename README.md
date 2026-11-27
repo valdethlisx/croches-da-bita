@@ -39,6 +39,16 @@ e abra o endereço que aparecer (algo como `http://localhost:3000`). Depois de p
 
 As fotos atuais vieram da pasta do Drive e passaram por curadoria: até 4 por peça (ou por cor), além da foto principal do topo e de 6 na galeria do Instagram. Todas foram endireitadas, enquadradas em 4:5 e tratadas da mesma forma: luz amarelada neutralizada, níveis, contraste e nitidez. Fotos pequenas não foram ampliadas. Para novas peças, siga o mesmo padrão.
 
+**Giro 360°:** uma peça pode ter uma sequência de fotos dela girando; na galeria aparece a miniatura "360°" e a cliente gira a peça arrastando o dedo. Como fazer:
+
+1. Fotografe seguindo o guia `_guia/disco-guia-360.png` (imprima em A4, tamanho real): 36 fotos, uma a cada 10°, com o celular parado.
+2. As fotos são recortadas e tratadas iguais e salvas em `assets/img/360/<peça>-<cor>/` com os nomes `01.jpg`, `02.jpg` … `36.jpg`, na ordem do giro.
+3. No `products.json`, na peça, acrescente:
+   ```json
+   "giro360": [ { "cor": "Pink", "pasta": "assets/img/360/bolsa-tranca-pink/", "quadros": 36 } ]
+   ```
+   `cor` é opcional: com ela, o giro só aparece quando essa cor está escolhida. Use `"extensao": "webp"` se as fotos forem WebP.
+
 **Peças com várias cores:** em cada foto, preencha `"cor"` com o nome exato de uma das cores da peça. Ao tocar na bolinha da cor, a galeria mostra só as fotos dela; com o filtro de cor do catálogo, o cartão também mostra a foto da cor filtrada. O link da página acompanha a cor (ex.: `?bolsa=bolsa-tranca&cor=Azul-marinho`).
 
 **Formato recomendado:** JPG ou WebP, em pé, proporção **4:5** (por exemplo 1200 × 1500 px), até cerca de 300 KB cada. Use nomes sem acento e sem espaço: `bolsa-aurora-1.jpg`, `bolsa-aurora-2.jpg`…
